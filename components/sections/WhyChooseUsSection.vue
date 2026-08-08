@@ -1,19 +1,19 @@
 <template>
-  <section id="about" class="py-16 bg-orange-50">
+  <section id="about" class="py-16 bg-gradient-to-b from-primary-50 to-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Why Choose NepaliBookInEurope?</h2>
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center font-heading">Why Choose NepaliBookInEurope?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div 
           v-for="benefit in benefits" 
           :key="benefit.id"
           class="text-center"
         >
-          <div class="bg-orange-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="bg-gradient-to-br from-primary-500 to-primary-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg hover:shadow-xl transition-shadow">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="benefit.icon" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-800 mb-2">{{ benefit.title }}</h3>
+          <h3 class="font-bold text-gray-800 mb-2 font-heading">{{ benefit.title }}</h3>
           <p class="text-gray-600">{{ benefit.description }}</p>
         </div>
       </div>

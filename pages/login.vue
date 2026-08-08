@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4">
     <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-orange-600 mb-2">NepaliBookInEurope</h1>
+        <h1 class="text-3xl font-bold text-primary-600 mb-2 font-heading">NepaliBookInEurope</h1>
         <p class="text-gray-600">{{ isLogin ? 'Welcome back!' : 'Create your account' }}</p>
       </div>
 
@@ -14,7 +14,7 @@
             v-model="loginForm.email" 
             type="email" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="your@email.com"
           />
         </div>
@@ -25,7 +25,7 @@
             v-model="loginForm.password" 
             type="password" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="••••••••"
           />
         </div>
@@ -35,12 +35,12 @@
             <input type="checkbox" class="mr-2" />
             <span class="text-gray-600 text-sm">Remember me</span>
           </label>
-          <a href="#" class="text-orange-600 text-sm hover:underline">Forgot password?</a>
+          <a href="#" class="text-primary-600 text-sm hover:underline">Forgot password?</a>
         </div>
 
         <button 
           type="submit"
-          class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
+          class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading"
         >
           Login
         </button>
@@ -54,7 +54,7 @@
             v-model="signupForm.fullname" 
             type="text" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="John Doe"
           />
         </div>
@@ -65,7 +65,7 @@
             v-model="signupForm.username" 
             type="text" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="johndoe"
           />
         </div>
@@ -76,7 +76,7 @@
             v-model="signupForm.email" 
             type="email" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="your@email.com"
           />
         </div>
@@ -87,7 +87,7 @@
             v-model="signupForm.password" 
             type="password" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="••••••••"
           />
         </div>
@@ -98,14 +98,14 @@
             v-model="signupForm.confirmPassword" 
             type="password" 
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             placeholder="••••••••"
           />
         </div>
 
         <button 
           type="submit"
-          class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
+          class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading"
         >
           Create Account
         </button>
@@ -117,7 +117,7 @@
           {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
           <button 
             @click="toggleForm"
-            class="text-orange-600 font-semibold hover:underline"
+            class="text-primary-600 font-semibold hover:underline"
           >
             {{ isLogin ? 'Sign up' : 'Login' }}
           </button>
