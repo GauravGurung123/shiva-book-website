@@ -5,9 +5,68 @@ interface ApiResponse<T> {
   message?: string
 }
 
+interface PaginatedResponse<T> {
+  data: T[]
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+}
+
 export const useBooks = () => {
   const { get } = useApi()
   
+  // Fetch paginated books
+  const fetchBooks = async (page: number = 1, perPage: number = 25, sortBy: string = 'id', descending: boolean = false) => {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        rowsPerPage: perPage.toString(),
+        sortBy,
+        descending: descending.toString()
+      })
+      
+      const response = await get<any>(`/books?${params.toString()}`)
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Map API response to Book interface
+        const books = response.data.map((book: any) => ({
+          id: book.id?.toString() || book.slug,
+          title: book.title,
+          author: book.author || 'Unknown Author',
+          price: book.final_price || book.price || '€0.00',
+          description: book.description,
+          coverImage: book.photo_url || book.photo_path || book.cover_image || book.coverImage,
+          slug: book.slug
+        }))
+        
+        return {
+          books,
+          pagination: {
+            currentPage: response.meta?.current_page || 1,
+            lastPage: response.meta?.last_page || 1,
+            perPage: response.meta?.per_page || 25,
+            total: response.meta?.total || 0
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching books:', err)
+      throw err
+    }
+    
+    return {
+      books: [] as Book[],
+      pagination: {
+        currentPage: 1,
+        lastPage: 1,
+        perPage: 25,
+        total: 0
+      }
+    }
+  }
+  
+  // Legacy method for backward compatibility (fetches featured and new arrivals)
   const { data, pending: loading, error } = useAsyncData('books', async () => {
     try {
       const response = await get<ApiResponse<Book[]>>('/books')
@@ -56,6 +115,7 @@ export const useBooks = () => {
     featuredBooks,
     newArrivals,
     loading,
-    error: errorMessage
+    error: errorMessage,
+    fetchBooks
   }
 }

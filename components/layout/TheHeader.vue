@@ -50,6 +50,7 @@ import type { NavigationLink } from '~/types'
 const navigationLinks: NavigationLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Categories', href: '/categories' },
+  { label: 'Books', href: '/books' },
   { label: 'Featured', href: '/featured' },
   { label: 'New Arrivals', href: '/new-arrivals' },
   { label: 'About', href: '/about' },
