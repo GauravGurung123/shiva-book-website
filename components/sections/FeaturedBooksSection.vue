@@ -29,6 +29,7 @@
 
 <script setup lang="ts">
 import type { Book } from '~/types'
+import BookCard from "~/components/common/BookCard.vue";
 
 interface Props {
   books: Book[]

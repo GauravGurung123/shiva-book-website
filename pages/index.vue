@@ -28,6 +28,12 @@
 import { useBooks } from '~/composables/useBooks'
 import { useCategories } from '~/composables/useCategories'
 import { useFAQs } from '~/composables/useFAQs'
+import HeroSection from "~/components/sections/HeroSection.vue";
+import CategoriesSection from "~/components/sections/CategoriesSection.vue";
+import FeaturedBooksSection from "~/components/sections/FeaturedBooksSection.vue";
+import NewArrivalsSection from "~/components/sections/NewArrivalsSection.vue";
+import WhyChooseUsSection from "~/components/sections/WhyChooseUsSection.vue";
+import FAQSection from "~/components/sections/FAQSection.vue";
 
 const { featuredBooks, newArrivals, loading: booksLoading, error: booksError } = useBooks()
 const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
