@@ -11,9 +11,9 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'NepliBookInEurope — Buy Nepali Books Online in Europe | Free Shipping',
+      title: 'NepaliBookInEurope — Buy Nepali Books Online in Europe | Free Shipping',
       meta: [
-        { name: 'description', content: 'Shop Nepali books online at NepliBookInEurope. FREE shipping on all orders across Europe. 15-day returns. COD available.' }
+        { name: 'description', content: 'Shop Nepali books online at NepaliBookInEurope. FREE shipping on all orders across Europe. 15-day returns. COD available.' }
       ]
     }
   }

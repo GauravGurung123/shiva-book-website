@@ -17,7 +17,7 @@
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800">Email</h3>
-                <p class="text-gray-600">support@neplibookineurope.com</p>
+                <p class="text-gray-600">support@NepaliBookInEurope.com</p>
               </div>
             </div>
 

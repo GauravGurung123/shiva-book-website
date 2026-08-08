@@ -5,7 +5,7 @@
         <!-- Logo -->
         <div class="flex items-center">
           <NuxtLink to="/" class="text-2xl font-bold text-orange-600 hover:text-orange-700 transition">
-            NepliBookInEurope
+            NepaliBookInEurope
           </NuxtLink>
         </div>
         

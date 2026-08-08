@@ -1,7 +1,7 @@
 <template>
   <section id="about" class="py-16 bg-orange-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Why Choose NepliBookInEurope?</h2>
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Why Choose NepaliBookInEurope?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div 
           v-for="benefit in benefits" 

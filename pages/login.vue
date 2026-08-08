@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4">
     <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-orange-600 mb-2">NepliBookInEurope</h1>
+        <h1 class="text-3xl font-bold text-orange-600 mb-2">NepaliBookInEurope</h1>
         <p class="text-gray-600">{{ isLogin ? 'Welcome back!' : 'Create your account' }}</p>
       </div>
 
