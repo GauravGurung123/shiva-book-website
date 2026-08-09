@@ -20,6 +20,7 @@
             :key="link.href"
             :to="link.href" 
             class="text-gray-700 hover:text-primary-600 transition font-medium relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary-600 after:transition-all hover:after:w-full"
+            active-class="text-primary-600 after:w-full"
           >
             {{ link.label }}
           </NuxtLink>
