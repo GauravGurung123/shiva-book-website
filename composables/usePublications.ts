@@ -26,11 +26,11 @@ export const usePublications = () => {
         descending: descending.toString()
       })
       
-      const response = await get<ApiResponse<PaginatedResponse<any>>>(`/publications?${params.toString()}`)
+      const response = await get<any>(`/publications?${params.toString()}`)
       
-      if (response.data) {
+      if (response.data && Array.isArray(response.data)) {
         // Map API response to Publication interface
-        const publications = response.data.data.map((publication: any) => ({
+        const publications = response.data.map((publication: any) => ({
           id: publication.id?.toString() || publication.slug,
           name: publication.name,
           slug: publication.slug,
@@ -41,10 +41,10 @@ export const usePublications = () => {
         return {
           publications,
           pagination: {
-            currentPage: response.data.current_page,
-            lastPage: response.data.last_page,
-            perPage: response.data.per_page,
-            total: response.data.total
+            currentPage: response.meta?.current_page || 1,
+            lastPage: response.meta?.last_page || 1,
+            perPage: response.meta?.per_page || 25,
+            total: response.meta?.total || 0
           }
         }
       }
