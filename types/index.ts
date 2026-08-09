@@ -37,3 +37,19 @@ export interface NavigationLink {
   label: string
   href: string
 }
+
+export interface Author {
+  id: string
+  name: string
+  slug: string
+  bio?: string
+  photo?: string
+}
+
+export interface Publication {
+  id: string
+  name: string
+  slug: string
+  description?: string
+  logo?: string
+}
