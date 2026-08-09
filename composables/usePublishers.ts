@@ -1,4 +1,4 @@
-import type { Publication } from '~/types'
+import type { Publisher } from '~/types'
 
 interface ApiResponse<T> {
   data: T
@@ -13,11 +13,11 @@ interface PaginatedResponse<T> {
   total: number
 }
 
-export const usePublications = () => {
+export const usePublishers = () => {
   const { get } = useApi()
   
-  // Fetch paginated publications
-  const fetchPublications = async (page: number = 1, perPage: number = 25, sortBy: string = 'id', descending: boolean = false) => {
+  // Fetch paginated publishers
+  const fetchPublishers = async (page: number = 1, perPage: number = 25, sortBy: string = 'id', descending: boolean = false) => {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -26,20 +26,20 @@ export const usePublications = () => {
         descending: descending.toString()
       })
       
-      const response = await get<any>(`/publications?${params.toString()}`)
+      const response = await get<any>(`/publishers?${params.toString()}`)
       
       if (response.data && Array.isArray(response.data)) {
-        // Map API response to Publication interface
-        const publications = response.data.map((publication: any) => ({
-          id: publication.id?.toString() || publication.slug,
-          name: publication.name,
-          slug: publication.slug,
-          description: publication.description,
-          logo: publication.logo_url || publication.logo_path || publication.logo
+        // Map API response to Publisher interface
+        const publishers = response.data.map((publisher: any) => ({
+          id: publisher.id?.toString() || publisher.slug,
+          name: publisher.name,
+          slug: publisher.slug,
+          description: publisher.description,
+          logo: publisher.logo_url || publisher.logo_path || publisher.logo
         }))
         
         return {
-          publications,
+          publishers,
           pagination: {
             currentPage: response.meta?.current_page || 1,
             lastPage: response.meta?.last_page || 1,
@@ -49,12 +49,12 @@ export const usePublications = () => {
         }
       }
     } catch (err) {
-      console.error('Error fetching publications:', err)
+      console.error('Error fetching publishers:', err)
       throw err
     }
     
     return {
-      publications: [] as Publication[],
+      publishers: [] as Publisher[],
       pagination: {
         currentPage: 1,
         lastPage: 1,
@@ -64,34 +64,34 @@ export const usePublications = () => {
     }
   }
   
-  // Fetch all publications (no pagination)
-  const fetchAllPublications = async () => {
+  // Fetch all publishers (no pagination)
+  const fetchAllPublishers = async () => {
     try {
-      const response = await get<ApiResponse<any[]>>('/publications/all')
+      const response = await get<ApiResponse<any[]>>('/publishers/all')
       
       if (response.data) {
-        // Map API response to Publication interface
-        return response.data.map((publication: any) => ({
-          id: publication.id?.toString() || publication.slug,
-          name: publication.name,
-          slug: publication.slug,
-          description: publication.description,
-          logo: publication.logo_url || publication.logo_path || publication.logo
+        // Map API response to Publisher interface
+        return response.data.map((publisher: any) => ({
+          id: publisher.id?.toString() || publisher.slug,
+          name: publisher.name,
+          slug: publisher.slug,
+          description: publisher.description,
+          logo: publisher.logo_url || publisher.logo_path || publisher.logo
         }))
       }
     } catch (err) {
-      console.error('Error fetching all publications:', err)
+      console.error('Error fetching all publishers:', err)
       throw err
     }
     
-    return [] as Publication[]
+    return [] as Publisher[]
   }
   
   // Legacy method for backward compatibility (fetches first page)
-  const { data, pending: loading, error } = useAsyncData('publications', async () => {
+  const { data, pending: loading, error } = useAsyncData('publishers', async () => {
     try {
-      const result = await fetchPublications(1, 25, 'id', false)
-      return result.publications
+      const result = await fetchPublishers(1, 25, 'id', false)
+      return result.publishers
     } catch (err) {
       // Fallback to mock data if API fails
       return [
@@ -109,14 +109,14 @@ export const usePublications = () => {
     }
   })
 
-  const publications = computed(() => data.value || [])
+  const publishers = computed(() => data.value || [])
   const errorMessage = computed(() => error.value?.message || null)
 
   return {
-    publications,
+    publishers,
     loading,
     error: errorMessage,
-    fetchPublications,
-    fetchAllPublications
+    fetchPublishers,
+    fetchAllPublishers
   }
 }

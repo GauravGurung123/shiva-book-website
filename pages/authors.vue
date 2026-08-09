@@ -3,6 +3,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center font-heading">Browse by Author</h1>
       
+      <!-- Search and Filters -->
+      <SearchAndFilters
+        search-placeholder="Search authors by name..."
+        :show-category-filter="false"
+        :show-price-filter="false"
+        @search="handleSearch"
+        @clear="handleClearFilters"
+      />
+      
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -63,6 +72,7 @@
 
 <script setup lang="ts">
 import { useAuthors } from '~/composables/useAuthors'
+import SearchAndFilters from "~/components/common/SearchAndFilters.vue";
 
 const { fetchAuthors } = useAuthors()
 
@@ -76,12 +86,43 @@ const pagination = ref({
   total: 0
 })
 
+const currentFilters = ref({
+  searchQuery: '',
+  sortBy: 'newest'
+})
+
 const loadAuthors = async (page: number = 1) => {
   loading.value = true
   error.value = null
   
   try {
-    const result = await fetchAuthors(page, 25, 'id', false)
+    // Map sortBy to API parameters
+    let sortBy = 'id'
+    let descending = false
+    
+    switch (currentFilters.value.sortBy) {
+      case 'newest':
+        sortBy = 'id'
+        descending = true
+        break
+      case 'oldest':
+        sortBy = 'id'
+        descending = false
+        break
+      case 'name-asc':
+        sortBy = 'name'
+        descending = false
+        break
+      case 'name-desc':
+        sortBy = 'name'
+        descending = true
+        break
+      default:
+        sortBy = 'id'
+        descending = false
+    }
+    
+    const result = await fetchAuthors(page, 25, sortBy, descending)
     authors.value = result.authors
     pagination.value = result.pagination
   } catch (err: any) {
@@ -106,6 +147,22 @@ const getInitials = (name: string): string => {
     return parts[0].charAt(0).toUpperCase()
   }
   return parts[0].charAt(0).toUpperCase() + parts[parts.length - 1].charAt(0).toUpperCase()
+}
+
+const handleSearch = (query: string, filters: any) => {
+  currentFilters.value = {
+    searchQuery: query,
+    sortBy: filters.sortBy
+  }
+  loadAuthors(1)
+}
+
+const handleClearFilters = () => {
+  currentFilters.value = {
+    searchQuery: '',
+    sortBy: 'newest'
+  }
+  loadAuthors(1)
 }
 
 // Load initial page

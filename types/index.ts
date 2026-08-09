@@ -46,7 +46,7 @@ export interface Author {
   photo?: string
 }
 
-export interface Publication {
+export interface Publisher {
   id: string
   name: string
   slug: string

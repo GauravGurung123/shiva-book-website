@@ -3,6 +3,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center font-heading">Browse All Books</h1>
       
+      <!-- Search and Filters -->
+      <SearchAndFilters
+        :categories="categories"
+        @search="handleSearch"
+        @clear="handleClearFilters"
+      />
+      
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -58,9 +65,12 @@
 
 <script setup lang="ts">
 import { useBooks } from '~/composables/useBooks'
+import { useCategories } from '~/composables/useCategories'
 import BookCard from "~/components/common/BookCard.vue";
+import SearchAndFilters from "~/components/common/SearchAndFilters.vue";
 
 const { fetchBooks } = useBooks()
+const { categories } = useCategories()
 
 const books = ref<any[]>([])
 const loading = ref(false)
@@ -72,12 +82,51 @@ const pagination = ref({
   total: 0
 })
 
+const currentFilters = ref({
+  searchQuery: '',
+  categories: [] as string[],
+  minPrice: null as number | null,
+  maxPrice: null as number | null,
+  sortBy: 'newest'
+})
+
 const loadBooks = async (page: number = 1) => {
   loading.value = true
   error.value = null
   
   try {
-    const result = await fetchBooks(page, 25, 'id', false)
+    // Map sortBy to API parameters
+    let sortBy = 'id'
+    let descending = false
+    
+    switch (currentFilters.value.sortBy) {
+      case 'newest':
+        sortBy = 'id'
+        descending = true
+        break
+      case 'oldest':
+        sortBy = 'id'
+        descending = false
+        break
+      case 'name-asc':
+        sortBy = 'title'
+        descending = false
+        break
+      case 'name-desc':
+        sortBy = 'title'
+        descending = true
+        break
+      case 'price-asc':
+        sortBy = 'price'
+        descending = false
+        break
+      case 'price-desc':
+        sortBy = 'price'
+        descending = true
+        break
+    }
+    
+    const result = await fetchBooks(page, 25, sortBy, descending)
     books.value = result.books
     pagination.value = result.pagination
   } catch (err: any) {
@@ -94,6 +143,28 @@ const goToPage = (page: number) => {
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+}
+
+const handleSearch = (query: string, filters: any) => {
+  currentFilters.value = {
+    searchQuery: query,
+    categories: filters.categories,
+    minPrice: filters.minPrice,
+    maxPrice: filters.maxPrice,
+    sortBy: filters.sortBy
+  }
+  loadBooks(1)
+}
+
+const handleClearFilters = () => {
+  currentFilters.value = {
+    searchQuery: '',
+    categories: [],
+    minPrice: null,
+    maxPrice: null,
+    sortBy: 'newest'
+  }
+  loadBooks(1)
 }
 
 const handleAddToCart = (book: any) => {

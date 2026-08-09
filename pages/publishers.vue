@@ -1,7 +1,16 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center font-heading">Browse by Publication</h1>
+      <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center font-heading">Browse by Publisher</h1>
+      
+      <!-- Search and Filters -->
+      <SearchAndFilters
+        search-placeholder="Search publishers by name..."
+        :show-category-filter="false"
+        :show-price-filter="false"
+        @search="handleSearch"
+        @clear="handleClearFilters"
+      />
       
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
@@ -13,19 +22,19 @@
         <p class="text-red-600">{{ error }}</p>
       </div>
       
-      <!-- Publications Grid -->
+      <!-- Publishers Grid -->
       <div v-else>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <div 
-            v-for="publication in publications" 
-            :key="publication.id"
+            v-for="publisher in publishers" 
+            :key="publisher.id"
             class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group"
           >
             <div class="w-20 h-20 mx-auto mb-4 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-2xl font-bold text-primary-600 group-hover:from-primary-200 group-hover:to-primary-300 transition">
               📚
             </div>
-            <h3 class="font-semibold text-gray-700 group-hover:text-primary-600 transition font-heading text-lg">{{ publication.name }}</h3>
-            <p v-if="publication.description" class="text-gray-500 text-sm mt-2 line-clamp-2">{{ publication.description }}</p>
+            <h3 class="font-semibold text-gray-700 group-hover:text-primary-600 transition font-heading text-lg">{{ publisher.name }}</h3>
+            <p v-if="publisher.description" class="text-gray-500 text-sm mt-2 line-clamp-2">{{ publisher.description }}</p>
           </div>
         </div>
         
@@ -53,8 +62,8 @@
         </div>
         
         <!-- Empty State -->
-        <div v-if="publications.length === 0 && !loading" class="text-center py-12">
-          <p class="text-gray-600 font-heading">No publications found.</p>
+        <div v-if="publishers.length === 0 && !loading" class="text-center py-12">
+          <p class="text-gray-600 font-heading">No publishers found.</p>
         </div>
       </div>
     </div>
@@ -62,11 +71,12 @@
 </template>
 
 <script setup lang="ts">
-import { usePublications } from '~/composables/usePublications'
+import { usePublishers } from '~/composables/usePublishers'
+import SearchAndFilters from "~/components/common/SearchAndFilters.vue";
 
-const { fetchPublications } = usePublications()
+const { fetchPublishers } = usePublishers()
 
-const publications = ref<any[]>([])
+const publishers = ref<any[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 const pagination = ref({
@@ -76,17 +86,48 @@ const pagination = ref({
   total: 0
 })
 
-const loadPublications = async (page: number = 1) => {
+const currentFilters = ref({
+  searchQuery: '',
+  sortBy: 'newest'
+})
+
+const loadPublishers = async (page: number = 1) => {
   loading.value = true
   error.value = null
   
   try {
-    const result = await fetchPublications(page, 25, 'id', false)
-    publications.value = result.publications
+    // Map sortBy to API parameters
+    let sortBy = 'id'
+    let descending = false
+    
+    switch (currentFilters.value.sortBy) {
+      case 'newest':
+        sortBy = 'id'
+        descending = true
+        break
+      case 'oldest':
+        sortBy = 'id'
+        descending = false
+        break
+      case 'name-asc':
+        sortBy = 'name'
+        descending = false
+        break
+      case 'name-desc':
+        sortBy = 'name'
+        descending = true
+        break
+      default:
+        sortBy = 'id'
+        descending = false
+    }
+    
+    const result = await fetchPublishers(page, 25, sortBy, descending)
+    publishers.value = result.publishers
     pagination.value = result.pagination
   } catch (err: any) {
-    error.value = err.message || 'Failed to load publications'
-    console.error('Error loading publications:', err)
+    error.value = err.message || 'Failed to load publishers'
+    console.error('Error loading publishers:', err)
   } finally {
     loading.value = false
   }
@@ -94,15 +135,31 @@ const loadPublications = async (page: number = 1) => {
 
 const goToPage = (page: number) => {
   if (page >= 1 && page <= pagination.value.lastPage) {
-    loadPublications(page)
+    loadPublishers(page)
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
+const handleSearch = (query: string, filters: any) => {
+  currentFilters.value = {
+    searchQuery: query,
+    sortBy: filters.sortBy
+  }
+  loadPublishers(1)
+}
+
+const handleClearFilters = () => {
+  currentFilters.value = {
+    searchQuery: '',
+    sortBy: 'newest'
+  }
+  loadPublishers(1)
+}
+
 // Load initial page
 onMounted(() => {
-  loadPublications(1)
+  loadPublishers(1)
 })
 
 definePageMeta({

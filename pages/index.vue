@@ -12,10 +12,10 @@
       :loading="authorsLoading" 
       :error="authorsError" 
     />
-    <PublicationsSection 
-      :publications="publications" 
-      :loading="publicationsLoading" 
-      :error="publicationsError" 
+    <PublishersSection 
+      :publishers="publishers" 
+      :loading="publishersLoading" 
+      :error="publishersError" 
     />
     <FeaturedBooksSection 
       :books="featuredBooks" 
@@ -38,12 +38,12 @@
 import { useBooks } from '~/composables/useBooks'
 import { useCategories } from '~/composables/useCategories'
 import { useAuthors } from '~/composables/useAuthors'
-import { usePublications } from '~/composables/usePublications'
+import { usePublishers } from '~/composables/usePublishers'
 import { useFAQs } from '~/composables/useFAQs'
 import HeroSection from "~/components/sections/HeroSection.vue";
 import CategoriesSection from "~/components/sections/CategoriesSection.vue";
 import AuthorsSection from "~/components/sections/AuthorsSection.vue";
-import PublicationsSection from "~/components/sections/PublicationsSection.vue";
+import PublishersSection from "~/components/sections/PublishersSection.vue";
 import FeaturedBooksSection from "~/components/sections/FeaturedBooksSection.vue";
 import NewArrivalsSection from "~/components/sections/NewArrivalsSection.vue";
 import WhyChooseUsSection from "~/components/sections/WhyChooseUsSection.vue";
@@ -52,7 +52,7 @@ import FAQSection from "~/components/sections/FAQSection.vue";
 const { featuredBooks, newArrivals, loading: booksLoading, error: booksError } = useBooks()
 const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
 const { authors, loading: authorsLoading, error: authorsError } = useAuthors()
-const { publications, loading: publicationsLoading, error: publicationsError } = usePublications()
+const { publishers, loading: publishersLoading, error: publishersError } = usePublishers()
 const { faqs } = useFAQs()
 
 const handleAddToCart = (book: any) => {
