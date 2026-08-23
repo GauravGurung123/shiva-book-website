@@ -53,3 +53,30 @@ export interface Publisher {
   description?: string
   logo?: string
 }
+
+export interface BlogPost {
+  id: string | number
+  title: string
+  slug: string
+  excerpt?: string
+  content?: string
+  body?: string
+  author?: string
+  category?: string
+  category_id?: number
+  date?: string
+  thumbnail?: string
+  featured_image?: string
+  featured_image_url?: string | null
+  published_at?: string | null
+  is_featured?: boolean
+  meta_title?: string
+  meta_description?: string
+  meta_keywords?: string
+  views_count?: number
+  reading_time_minutes?: number
+  createdAt?: string
+  updatedAt?: string
+  creator?: any
+  updater?: any
+}

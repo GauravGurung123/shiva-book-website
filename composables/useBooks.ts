@@ -66,18 +66,65 @@ export const useBooks = () => {
     }
   }
   
+  // Fetch featured books
+  const fetchFeaturedBooks = async () => {
+    try {
+      const response = await get<any>('/ref-books/featured')
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Map API response to Book interface
+        return response.data.map((book: any) => ({
+          id: book.id?.toString() || book.slug,
+          title: book.title,
+          author: book.authors?.map((a: any) => a.name).join(', ') || book.author || 'Unknown Author',
+          price: book.final_price || book.price || '€0.00',
+          description: book.description,
+          coverImage: book.photo_url || book.photo_path || book.cover_image || book.coverImage,
+          slug: book.slug
+        }))
+      }
+    } catch (err) {
+      console.error('Error fetching featured books:', err)
+    }
+    
+    return [] as Book[]
+  }
+  
+  // Fetch newest arrivals
+  const fetchNewestArrivals = async () => {
+    try {
+      const response = await get<any>('/ref-books/newest-arrivals')
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Map API response to Book interface
+        return response.data.map((book: any) => ({
+          id: book.id?.toString() || book.slug,
+          title: book.title,
+          author: book.authors?.map((a: any) => a.name).join(', ') || book.author || 'Unknown Author',
+          price: book.final_price || book.price || '€0.00',
+          description: book.description,
+          coverImage: book.photo_url || book.photo_path || book.cover_image || book.coverImage,
+          slug: book.slug
+        }))
+      }
+    } catch (err) {
+      console.error('Error fetching newest arrivals:', err)
+    }
+    
+    return [] as Book[]
+  }
+  
   // Legacy method for backward compatibility (fetches featured and new arrivals)
   const { data, pending: loading, error } = useAsyncData('books', async () => {
     try {
-      const response = await get<ApiResponse<Book[]>>('/books')
+      const [featured, newArrivals] = await Promise.all([
+        fetchFeaturedBooks(),
+        fetchNewestArrivals()
+      ])
       
-      if (response.data) {
-        // Split books into featured and new arrivals (first 5 as featured, next 5 as new arrivals)
-        const allBooks = response.data
-        return {
-          featured: allBooks.slice(0, 5),
-          newArrivals: allBooks.slice(5, 10)
-        }
+      return {
+        featured,
+        newArrivals
       }
     } catch (err) {
       console.error('Error fetching books:', err)
@@ -116,6 +163,8 @@ export const useBooks = () => {
     newArrivals,
     loading,
     error: errorMessage,
-    fetchBooks
+    fetchBooks,
+    fetchFeaturedBooks,
+    fetchNewestArrivals
   }
 }

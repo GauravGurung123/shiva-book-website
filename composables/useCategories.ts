@@ -105,11 +105,32 @@ export const useCategories = () => {
     return [] as Category[]
   }
   
+  // Fetch featured categories
+  const fetchFeaturedCategories = async () => {
+    try {
+      const response = await get<any>('/ref-categories/featured')
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Map API response to Category interface
+        return response.data.map((category: any) => ({
+          id: category.id?.toString() || category.slug,
+          name: category.name,
+          icon: getCategoryIcon(category.name),
+          slug: category.slug
+        }))
+      }
+    } catch (err) {
+      console.error('Error fetching featured categories:', err)
+    }
+    
+    return [] as Category[]
+  }
+  
   // Legacy method for backward compatibility (fetches first page)
   const { data, pending: loading, error } = useAsyncData('categories', async () => {
     try {
-      const result = await fetchCategories(1, 25, 'id', false)
-      return result.categories
+      const result = await fetchFeaturedCategories()
+      return result.length > 0 ? result : await fetchCategories(1, 25, 'id', false).then(r => r.categories)
     } catch (err) {
       // Fallback to mock data if API fails
       return [
@@ -137,6 +158,7 @@ export const useCategories = () => {
     loading,
     error: errorMessage,
     fetchCategories,
-    fetchAllCategories
+    fetchAllCategories,
+    fetchFeaturedCategories
   }
 }
