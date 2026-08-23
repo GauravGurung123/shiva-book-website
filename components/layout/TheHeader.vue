@@ -54,6 +54,7 @@ const navigationLinks: NavigationLink[] = [
   { label: 'Authors', href: '/authors' },
   { label: 'Publishers', href: '/publishers' },
   { label: 'Books', href: '/books' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Featured', href: '/featured' },
   { label: 'New Arrivals', href: '/new-arrivals' },
   { label: 'About', href: '/about' },
