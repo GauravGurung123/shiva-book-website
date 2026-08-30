@@ -24,14 +24,15 @@
       
       <!-- Categories Grid -->
       <div v-else class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        <div 
+        <NuxtLink 
           v-for="category in categories" 
           :key="category.id"
-          class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group"
+          :to="`/categories/${category.slug}`"
+          class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group block"
         >
           <div class="text-3xl mb-2">{{ category.icon }}</div>
           <h3 class="font-semibold text-gray-700 group-hover:text-primary-600 transition font-heading">{{ category.name }}</h3>
-        </div>
+        </NuxtLink>
       </div>
     </div>
   </div>
