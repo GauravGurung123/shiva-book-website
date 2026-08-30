@@ -113,6 +113,48 @@ export const useBooks = () => {
     
     return [] as Book[]
   }
+
+  // Fetch single book by slug
+  const fetchBookBySlug = async (slug: string) => {
+    try {
+      console.log('Fetching book from API:', `/books/${slug}`)
+      const response = await get<any>(`/books/${slug}`)
+      console.log('API response:', response)
+      
+      if (response.data) {
+        const book = response.data
+        // Map API response to Book interface
+        return {
+          id: book.id,
+          title: book.title,
+          slug: book.slug,
+          isbn: book.isbn,
+          description: book.description,
+          publisher_id: book.publisher_id,
+          publisher: book.publisher,
+          authors: book.authors,
+          categories: book.categories,
+          price: book.price,
+          discount_price: book.discount_price,
+          final_price: book.final_price,
+          stock_quantity: book.stock_quantity,
+          photo_path: book.photo_path,
+          photo_url: book.photo_url,
+          coverImage: book.photo_url || book.photo_path,
+          language: book.language,
+          pages: book.pages,
+          published_date: book.published_date,
+          is_active: book.is_active,
+          author: book.authors?.map((a: any) => a.name).join(', ') || 'Unknown Author'
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching book by slug:', err)
+      throw err
+    }
+    
+    return null
+  }
   
   // Legacy method for backward compatibility (fetches featured and new arrivals)
   const { data, pending: loading, error } = useAsyncData('books', async () => {
@@ -165,6 +207,7 @@ export const useBooks = () => {
     error: errorMessage,
     fetchBooks,
     fetchFeaturedBooks,
-    fetchNewestArrivals
+    fetchNewestArrivals,
+    fetchBookBySlug
   }
 }

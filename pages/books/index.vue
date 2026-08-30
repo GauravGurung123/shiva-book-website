@@ -27,7 +27,6 @@
             v-for="book in books" 
             :key="book.id" 
             :book="book"
-            @add-to-cart="handleAddToCart"
           />
         </div>
         
@@ -165,11 +164,6 @@ const handleClearFilters = () => {
     sortBy: 'newest'
   }
   loadBooks(1)
-}
-
-const handleAddToCart = (book: any) => {
-  console.log('Added to cart:', book.title)
-  // TODO: Implement cart functionality
 }
 
 // Load initial page

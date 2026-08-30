@@ -1,12 +1,27 @@
 export interface Book {
   id: number
   title: string
+  slug: string
   author: string
   price: string
   coverImage?: string
   description?: string
   category?: string
   rating?: number
+  isbn?: string
+  discount_price?: number
+  final_price?: number
+  stock_quantity?: number
+  photo_path?: string
+  photo_url?: string
+  language?: string
+  pages?: number
+  published_date?: string
+  is_active?: boolean
+  authors?: Author[]
+  categories?: Category[]
+  publisher?: Publisher
+  publisher_id?: string
 }
 
 export interface Category {
