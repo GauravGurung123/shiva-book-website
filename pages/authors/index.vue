@@ -25,17 +25,18 @@
       <!-- Authors Grid -->
       <div v-else>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div 
+          <NuxtLink 
             v-for="author in authors" 
             :key="author.id"
-            class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group"
+            :to="`/authors/${author.slug}`"
+            class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group block"
           >
             <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-2xl font-bold text-primary-600 group-hover:from-primary-200 group-hover:to-primary-300 transition">
               {{ getInitials(author.name) }}
             </div>
             <h3 class="font-semibold text-gray-700 group-hover:text-primary-600 transition font-heading text-lg">{{ author.name }}</h3>
             <p v-if="author.bio" class="text-gray-500 text-sm mt-2 line-clamp-2">{{ author.bio }}</p>
-          </div>
+          </NuxtLink>
         </div>
         
         <!-- Pagination -->
