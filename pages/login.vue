@@ -6,6 +6,11 @@
         <p class="text-gray-600">{{ isLogin ? 'Welcome back!' : 'Create your account' }}</p>
       </div>
 
+      <!-- Error Message -->
+      <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+        {{ error }}
+      </div>
+
       <!-- Login Form -->
       <form v-if="isLogin" @submit.prevent="handleLogin" class="space-y-4">
         <div>
@@ -40,9 +45,10 @@
 
         <button 
           type="submit"
-          class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading"
+          :disabled="loading"
+          class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Login
+          {{ loading ? 'Logging in...' : 'Login' }}
         </button>
       </form>
 
@@ -51,7 +57,7 @@
         <div>
           <label class="block text-gray-700 font-medium mb-2">Full Name</label>
           <input 
-            v-model="signupForm.fullname" 
+            v-model="signupForm.name" 
             type="text" 
             required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
@@ -81,6 +87,27 @@
           />
         </div>
 
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Country Code</label>
+            <input 
+              v-model="signupForm.country_code_no" 
+              type="number" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              placeholder="+977"
+            />
+          </div>
+          <div class="col-span-2">
+            <label class="block text-gray-700 font-medium mb-2">Mobile Number</label>
+            <input 
+              v-model="signupForm.mobile_no" 
+              type="number" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              placeholder="98XXXXXXXX"
+            />
+          </div>
+        </div>
+
         <div>
           <label class="block text-gray-700 font-medium mb-2">Password</label>
           <input 
@@ -95,7 +122,7 @@
         <div>
           <label class="block text-gray-700 font-medium mb-2">Confirm Password</label>
           <input 
-            v-model="signupForm.confirmPassword" 
+            v-model="signupForm.password_confirmation" 
             type="password" 
             required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
@@ -105,9 +132,10 @@
 
         <button 
           type="submit"
-          class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading"
+          :disabled="loading"
+          class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create Account
+          {{ loading ? 'Creating Account...' : 'Create Account' }}
         </button>
       </form>
 
@@ -128,7 +156,12 @@
 </template>
 
 <script setup lang="ts">
+const { login, register, completeOAuthFlow, isAuthenticated } = useAuth()
+const router = useRouter()
+
 const isLogin = ref(true)
+const loading = ref(false)
+const error = ref('')
 
 const loginForm = ref({
   email: '',
@@ -136,33 +169,56 @@ const loginForm = ref({
 })
 
 const signupForm = ref({
-  fullname: '',
+  name: '',
   username: '',
   email: '',
+  country_code_no: null as number | null,
+  mobile_no: null as number | null,
   password: '',
-  confirmPassword: ''
+  password_confirmation: ''
 })
 
 const toggleForm = () => {
   isLogin.value = !isLogin.value
+  error.value = ''
 }
 
-const handleLogin = () => {
-  console.log('Login submitted:', loginForm.value)
-  // TODO: Implement login logic
-  alert('Login functionality to be implemented')
+const handleLogin = async () => {
+  loading.value = true
+  error.value = ''
+  
+  try {
+    await login(loginForm.value)
+    // After successful login, complete OAuth flow to get access token
+    await completeOAuthFlow()
+    router.push('/')
+  } catch (err: any) {
+    error.value = err.message || 'Login failed'
+  } finally {
+    loading.value = false
+  }
 }
 
-const handleSignup = () => {
+const handleSignup = async () => {
   // Validate password match
-  if (signupForm.value.password !== signupForm.value.confirmPassword) {
-    alert('Passwords do not match!')
+  if (signupForm.value.password !== signupForm.value.password_confirmation) {
+    error.value = 'Passwords do not match!'
     return
   }
 
-  console.log('Signup submitted:', signupForm.value)
-  // TODO: Implement signup logic
-  alert('Signup functionality to be implemented')
+  loading.value = true
+  error.value = ''
+  
+  try {
+    await register(signupForm.value)
+    // After successful registration, complete OAuth flow to get access token
+    await completeOAuthFlow()
+    router.push('/')
+  } catch (err: any) {
+    error.value = err.message || 'Registration failed'
+  } finally {
+    loading.value = false
+  }
 }
 
 definePageMeta({

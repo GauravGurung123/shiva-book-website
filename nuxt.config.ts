@@ -6,7 +6,10 @@ export default defineNuxtConfig({
   pages: true,
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:8000/api/ws/v1'
+      apiBase: process.env.API_BASE_URL || 'http://localhost:8000/api/ws/v1',
+      oauthClientId: process.env.NUXT_OAUTH_CLIENT_ID || '',
+      oauthClientSecret: process.env.NUXT_OAUTH_CLIENT_SECRET || '',
+      oauthRedirectUri: process.env.NUXT_OAUTH_REDIRECT_URI || 'http://localhost:3000/auth/callback'
     }
   },
   app: {

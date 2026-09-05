@@ -95,3 +95,42 @@ export interface BlogPost {
   creator?: any
   updater?: any
 }
+
+export interface User {
+  id: number
+  name: string
+  username: string
+  email: string
+  country_code_no?: number
+  mobile_no?: number
+  created_at?: string
+  updated_at?: string
+}
+
+export interface AuthResponse {
+  message: string
+  data: User
+  next_step: string
+}
+
+export interface RegisterData {
+  name: string
+  username: string
+  email: string
+  country_code_no?: number
+  mobile_no?: number
+  password: string
+  password_confirmation: string
+}
+
+export interface LoginData {
+  email: string
+  password: string
+}
+
+export interface OAuthTokenResponse {
+  access_token: string
+  token_type: string
+  expires_in: number
+  refresh_token?: string
+}
