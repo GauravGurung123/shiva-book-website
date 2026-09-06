@@ -126,7 +126,7 @@ export const useAuth = () => {
     }
 
     const data = await response.json()
-    return data.code
+    return data.authorization_code
   }
 
   // Exchange authorization code for access token
@@ -146,7 +146,7 @@ export const useAuth = () => {
       credentials: 'include',
       body: JSON.stringify({
         grant_type: 'authorization_code',
-        code,
+        code: code,
         code_verifier: codeVerifier,
         client_id: config.public.oauthClientId,
         client_secret: config.public.oauthClientSecret,
@@ -155,7 +155,8 @@ export const useAuth = () => {
     })
 
     if (!response.ok) {
-      throw new Error('Token exchange failed')
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Token exchange failed')
     }
 
     const data = await response.json()
@@ -163,8 +164,9 @@ export const useAuth = () => {
     // Store access token
     accessToken.value = data.access_token
     
-    // Clear code verifier
+    // Clear code verifier and challenge
     sessionStorage.removeItem('oauth_code_verifier')
+    sessionStorage.removeItem('oauth_code_challenge')
     
     return data
   }
@@ -172,16 +174,16 @@ export const useAuth = () => {
   // Complete OAuth flow
   const completeOAuthFlow = async () => {
     try {
-      // Step 1: Get authorization URL
+      // Step 1: Get authorization URL (generates and stores PKCE)
       const authUrl = await getAuthorizationUrl()
       
-      // Step 2: Authorize (auto-approved for BFF)
+      // Step 2: Authorize (auto-approved for BFF) - uses session from login
       const code = await authorize()
       
       // Step 3: Exchange code for token
       const tokenData = await exchangeToken(code)
       
-      // Step 4: Fetch user profile
+      // Step 4: Fetch user profile with access token
       await fetchUser()
       
       return tokenData
