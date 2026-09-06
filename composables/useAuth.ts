@@ -4,7 +4,8 @@ export const useAuth = () => {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase
   const accessToken = useCookie('access_token')
-  const user = useState<User | null>('user', () => null)
+  const userCookie = useCookie('user', { default: () => null })
+  const user = useState<User | null>('user', () => userCookie.value as User | null)
 
   // Generate PKCE code verifier and challenge
   const generatePKCE = () => {
@@ -52,6 +53,7 @@ export const useAuth = () => {
 
     const result = await response.json()
     user.value = result.data
+    userCookie.value = result.data
     return result
   }
 
@@ -74,6 +76,7 @@ export const useAuth = () => {
 
     const result = await response.json()
     user.value = result.data
+    userCookie.value = result.data
     return result
   }
 
@@ -213,6 +216,7 @@ export const useAuth = () => {
 
     const userData = await response.json()
     user.value = userData
+    userCookie.value = userData
     return userData
   }
 
@@ -232,6 +236,7 @@ export const useAuth = () => {
 
     accessToken.value = null
     user.value = null
+    userCookie.value = null
   }
 
   // Check if user is authenticated
