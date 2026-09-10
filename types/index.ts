@@ -134,3 +134,11 @@ export interface OAuthTokenResponse {
   expires_in: number
   refresh_token?: string
 }
+
+export interface SocialLink {
+  id: number
+  platform: string
+  url: string
+  icon?: string
+  is_active?: boolean
+}
