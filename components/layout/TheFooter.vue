@@ -36,15 +36,15 @@
           <ul class="space-y-2 text-gray-400">
             <li class="flex items-start space-x-2">
               <span class="text-primary-400 mt-1">📧</span>
-              <span class="break-words">support@NepaliBookInEurope.com</span>
+              <span class="break-words">{{ contactEmail }}</span>
             </li>
             <li class="flex items-center space-x-2">
               <span class="text-primary-400">📞</span>
-              <span>+44 20 1234 5678</span>
+              <span>{{ contactPhone }}</span>
             </li>
-            <li class="flex items-center space-x-2">
-              <span class="text-primary-400">💬</span>
-              <span>WhatsApp: +44 20 1234 5678</span>
+            <li v-if="contactAddress" class="flex items-center space-x-2">
+              <span class="text-primary-400">📍</span>
+              <span>{{ contactAddress }}</span>
             </li>
           </ul>
           <h4 class="font-semibold mb-4 mt-6 text-primary-400 font-heading">Follow Us</h4>
@@ -70,8 +70,14 @@
 
 <script setup lang="ts">
 import { useSocialLinks } from '~/composables/useSocialLinks'
+import { useSettings } from '~/composables/useSettings'
 
 const { socialLinks, fetchActiveSocialLinks } = useSocialLinks()
+const { getSetting, fetchMultipleSettings } = useSettings()
+
+const contactEmail = ref('support@NepaliBookInEurope.com')
+const contactPhone = ref('+44 20 1234 5678')
+const contactAddress = ref('')
 
 const getPlatformIcon = (platform: string): string => {
   const icons: Record<string, string> = {
@@ -88,7 +94,11 @@ const getPlatformIcon = (platform: string): string => {
   return icons[platform.toLowerCase()] || '🔗'
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchMultipleSettings(['contact_email', 'contact_phone', 'contact_address'])
+  contactEmail.value = getSetting('contact_email', 'support@NepaliBookInEurope.com')
+  contactPhone.value = getSetting('contact_phone', '+44 20 1234 5678')
+  contactAddress.value = getSetting('contact_address', '')
   fetchActiveSocialLinks()
 })
 </script>

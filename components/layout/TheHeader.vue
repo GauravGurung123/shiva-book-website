@@ -6,8 +6,8 @@
         <div class="flex items-center">
           <NuxtLink to="/" class="flex items-center space-x-3 group">
             <img 
-              src="/logo.png" 
-              alt="NepaliBookInEurope Logo" 
+              :src="siteLogo" 
+              :alt="`${siteName} Logo`" 
               class="h-16 w-auto object-contain transition-transform group-hover:scale-105"
             />
           </NuxtLink>
@@ -78,6 +78,10 @@
 import type { NavigationLink } from '~/types'
 
 const { isAuthenticated, user } = useAuth()
+const { getSetting, fetchMultipleSettings } = useSettings()
+
+const siteLogo = ref('/logo.png')
+const siteName = ref('NepaliBookInEurope')
 
 const navigationLinks: NavigationLink[] = [
   { label: 'Home', href: '/' },
@@ -93,4 +97,10 @@ const navigationLinks: NavigationLink[] = [
 ]
 
 const cartCount = ref(0)
+
+onMounted(async () => {
+  await fetchMultipleSettings(['site_logo', 'site_name'])
+  siteLogo.value = getSetting('site_logo', '/logo.png')
+  siteName.value = getSetting('site_name', 'NepaliBookInEurope')
+})
 </script>

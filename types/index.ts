@@ -142,3 +142,22 @@ export interface SocialLink {
   icon?: string
   is_active?: boolean
 }
+
+export interface Setting {
+  id: number
+  key: string
+  value: string
+  type: string
+  group: string
+  label: string
+  description: string | null
+  is_public: number
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+}
+
+export interface SettingResponse {
+  data: Setting
+  value: string
+}
