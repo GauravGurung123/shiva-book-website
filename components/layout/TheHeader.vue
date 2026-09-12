@@ -24,6 +24,16 @@
           >
             {{ link.label }}
           </NuxtLink>
+          <NuxtLink 
+            v-if="isAuthenticated"
+            v-for="link in authenticatedLinks" 
+            :key="link.href"
+            :to="link.href" 
+            class="text-gray-700 hover:text-primary-600 transition font-medium relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-primary-600 after:transition-all hover:after:w-full"
+            active-class="text-primary-600 after:w-full"
+          >
+            {{ link.label }}
+          </NuxtLink>
         </nav>
         
         <!-- Auth & Cart -->
@@ -91,13 +101,16 @@ const navigationLinks: NavigationLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Categories', href: '/categories' },
   { label: 'Authors', href: '/authors' },
-  { label: 'Publishers', href: '/publishers' },
   { label: 'Books', href: '/books' },
   { label: 'Blog', href: '/blog' },
   { label: 'Featured', href: '/featured' },
   { label: 'New Arrivals', href: '/new-arrivals' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' }
+]
+
+const authenticatedLinks: NavigationLink[] = [
+  { label: 'Orders', href: '/orders' }
 ]
 
 const cartCount = computed(() => itemCount.value)

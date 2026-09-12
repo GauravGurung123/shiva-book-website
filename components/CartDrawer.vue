@@ -101,7 +101,7 @@
               @click="goToCheckout"
               class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 transition flex items-center justify-center gap-2"
             >
-              <span>Confirm</span>
+              <span>Proceed to Order</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>

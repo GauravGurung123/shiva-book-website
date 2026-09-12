@@ -130,10 +130,10 @@
             </div>
             
             <button 
-              @click="proceedToPayment"
+              @click="proceedToOrder"
               class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 transition"
             >
-              Proceed to Checkout
+              Proceed to Order
             </button>
             
             <p class="text-center text-gray-500 text-sm mt-4">
@@ -203,8 +203,28 @@ const applyDiscount = async () => {
   }
 }
 
-const proceedToPayment = () => {
-  // TODO: Implement payment flow
-  console.log('Proceeding to checkout')
+const proceedToOrder = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    
+    // Create order via API
+    const { post } = useApi()
+    const response = await post<{ data: any }>('/orders', {
+      shipping_address_id: 1, // TODO: Get from user addresses
+      billing_address_id: 1, // TODO: Get from user addresses
+      notes: ''
+    })
+    
+    const order = response.data
+    
+    // Navigate to order confirmation page with order number
+    await navigateTo(`/orders/${order.order_number}`)
+  } catch (err: any) {
+    error.value = err.response?._data?.message || 'Failed to create order. Please try again.'
+    console.error('Error creating order:', err)
+  } finally {
+    loading.value = false
+  }
 }
 </script>

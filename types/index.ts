@@ -221,16 +221,22 @@ export interface CreateOrderData {
 
 export interface Order {
   id: number
-  user_id: number
+  user_id?: number
   order_number: string
   status: string
-  total_amount: number
-  shipping_address: Address
-  billing_address: Address
+  subtotal: number
+  tax: number
+  shipping_fee: number
+  discount_total: number
+  total: number
+  total_amount?: number
+  shipping_address?: Address
+  billing_address?: Address
   coupon_id?: number
   notes?: string
   created_at: string
   updated_at: string
+  expires_at?: string
   items: OrderItem[]
 }
 
