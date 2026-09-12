@@ -210,6 +210,11 @@ export interface Address {
   postal_code: string
   country: string
   phone?: string
+  is_default?: boolean
+}
+
+export interface AddressesResponse {
+  data: Address[]
 }
 
 export interface CreateOrderData {

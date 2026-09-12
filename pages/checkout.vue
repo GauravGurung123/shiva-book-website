@@ -26,8 +26,125 @@
       
       <!-- Checkout Content -->
       <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Cart Items -->
-        <div class="lg:col-span-2">
+        <!-- Left Column -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Address Selection -->
+          <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6 font-heading">Shipping Address</h2>
+            
+            <!-- Loading Addresses -->
+            <div v-if="loadingAddresses" class="flex justify-center items-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+            
+            <!-- No Addresses -->
+            <div v-else-if="!addresses || addresses.length === 0" class="text-center py-8">
+              <p class="text-gray-600 mb-4">No addresses found. Please add an address first.</p>
+              <NuxtLink to="/account/addresses" class="inline-block bg-primary-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-primary-700 transition">
+                Add Address
+              </NuxtLink>
+            </div>
+            
+            <!-- Address List -->
+            <div v-else class="space-y-3">
+              <div 
+                v-for="address in addresses" 
+                :key="address.id"
+                @click="selectedShippingAddress = address.id"
+                class="p-4 border rounded-lg cursor-pointer transition"
+                :class="selectedShippingAddress === address.id ? 'border-primary-600 bg-primary-50' : 'border-gray-200 hover:border-gray-300'"
+              >
+                <div class="flex items-start gap-3">
+                  <div class="mt-1">
+                    <div 
+                      class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                      :class="selectedShippingAddress === address.id ? 'border-primary-600 bg-primary-600' : 'border-gray-300'"
+                    >
+                      <div v-if="selectedShippingAddress === address.id" class="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{ address.full_name }}</p>
+                    <p class="text-sm text-gray-600 mt-1">
+                      {{ address.address_line_1 }}<br v-if="address.address_line_2" />
+                      {{ address.address_line_2 }}<br v-if="address.address_line_2" />
+                      {{ address.city }}, {{ address.state }} {{ address.postal_code }}<br />
+                      {{ address.country }}
+                    </p>
+                    <p v-if="address.phone" class="text-sm text-gray-600 mt-1">{{ address.phone }}</p>
+                  </div>
+                  <span v-if="address.is_default" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Default</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Billing Address -->
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-xl font-bold text-gray-800 font-heading">Billing Address</h2>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  v-model="sameAsShipping"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                />
+                <span class="text-sm text-gray-600">Same as shipping</span>
+              </label>
+            </div>
+            
+            <!-- Loading Addresses -->
+            <div v-if="loadingAddresses" class="flex justify-center items-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+            
+            <!-- No Addresses -->
+            <div v-else-if="!addresses || addresses.length === 0" class="text-center py-8">
+              <p class="text-gray-600 mb-4">No addresses found. Please add an address first.</p>
+              <NuxtLink to="/account/addresses" class="inline-block bg-primary-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-primary-700 transition">
+                Add Address
+              </NuxtLink>
+            </div>
+            
+            <!-- Address List (hidden if same as shipping) -->
+            <div v-else-if="!sameAsShipping" class="space-y-3">
+              <div 
+                v-for="address in addresses" 
+                :key="address.id"
+                @click="selectedBillingAddress = address.id"
+                class="p-4 border rounded-lg cursor-pointer transition"
+                :class="selectedBillingAddress === address.id ? 'border-primary-600 bg-primary-50' : 'border-gray-200 hover:border-gray-300'"
+              >
+                <div class="flex items-start gap-3">
+                  <div class="mt-1">
+                    <div 
+                      class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                      :class="selectedBillingAddress === address.id ? 'border-primary-600 bg-primary-600' : 'border-gray-300'"
+                    >
+                      <div v-if="selectedBillingAddress === address.id" class="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{ address.full_name }}</p>
+                    <p class="text-sm text-gray-600 mt-1">
+                      {{ address.address_line_1 }}<br v-if="address.address_line_2" />
+                      {{ address.address_line_2 }}<br v-if="address.address_line_2" />
+                      {{ address.city }}, {{ address.state }} {{ address.postal_code }}<br />
+                      {{ address.country }}
+                    </p>
+                    <p v-if="address.phone" class="text-sm text-gray-600 mt-1">{{ address.phone }}</p>
+                  </div>
+                  <span v-if="address.is_default" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Default</span>
+                </div>
+              </div>
+            </div>
+            
+            <div v-else class="p-4 bg-gray-50 rounded-lg">
+              <p class="text-sm text-gray-600">Billing address will be the same as shipping address</p>
+            </div>
+          </div>
+          
+          <!-- Order Items -->
           <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
               <h2 class="text-xl font-bold text-gray-800 font-heading">Order Summary</h2>
@@ -131,7 +248,8 @@
             
             <button 
               @click="proceedToOrder"
-              class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 transition"
+              :disabled="!selectedShippingAddress || (!sameAsShipping && !selectedBillingAddress)"
+              class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               Proceed to Order
             </button>
@@ -147,9 +265,11 @@
 </template>
 
 <script setup lang="ts">
-import type { CartItem } from '~/types'
+import type { CartItem, Address } from '~/types'
 
 const { cart, loading, error, fetchCart, itemCount, updateQuantity } = useCart()
+const { isAuthenticated } = useAuth()
+const { get } = useApi()
 
 const discountCode = ref('')
 const discountAmount = ref(0)
@@ -158,8 +278,56 @@ const discountError = ref('')
 const discountSuccess = ref('')
 const updatingQuantity = ref(false)
 
+// Address selection
+const addresses = ref<Address[]>([])
+const loadingAddresses = ref(false)
+const selectedShippingAddress = ref<number | null>(null)
+const selectedBillingAddress = ref<number | null>(null)
+const sameAsShipping = ref(true)
+
+// Redirect if not authenticated
+if (!isAuthenticated.value) {
+  await navigateTo('/login')
+}
+
 onMounted(async () => {
   await fetchCart()
+  await fetchAddresses()
+})
+
+const fetchAddresses = async () => {
+  loadingAddresses.value = true
+  try {
+    const response = await get<{ data: Address[] }>('/addresses')
+    addresses.value = response.data
+    
+    // Select default address for shipping
+    const defaultAddress = addresses.value.find(addr => addr.is_default)
+    if (defaultAddress) {
+      selectedShippingAddress.value = defaultAddress.id
+      selectedBillingAddress.value = defaultAddress.id
+    } else if (addresses.value.length > 0) {
+      selectedShippingAddress.value = addresses.value[0].id
+      selectedBillingAddress.value = addresses.value[0].id
+    }
+  } catch (err) {
+    console.error('Error fetching addresses:', err)
+  } finally {
+    loadingAddresses.value = false
+  }
+}
+
+// Sync billing address with shipping when sameAsShipping changes
+watch(sameAsShipping, (newValue) => {
+  if (newValue && selectedShippingAddress.value) {
+    selectedBillingAddress.value = selectedShippingAddress.value
+  }
+})
+
+watch(selectedShippingAddress, (newValue) => {
+  if (sameAsShipping.value && newValue) {
+    selectedBillingAddress.value = newValue
+  }
 })
 
 const updateItemQuantity = async (item: CartItem, newQuantity: number) => {
@@ -204,6 +372,11 @@ const applyDiscount = async () => {
 }
 
 const proceedToOrder = async () => {
+  if (!selectedShippingAddress.value || (!sameAsShipping.value && !selectedBillingAddress.value)) {
+    error.value = 'Please select shipping and billing addresses'
+    return
+  }
+  
   try {
     loading.value = true
     error.value = null
@@ -211,8 +384,8 @@ const proceedToOrder = async () => {
     // Create order via API
     const { post } = useApi()
     const response = await post<{ data: any }>('/orders', {
-      shipping_address_id: 1, // TODO: Get from user addresses
-      billing_address_id: 1, // TODO: Get from user addresses
+      shipping_address_id: selectedShippingAddress.value,
+      billing_address_id: sameAsShipping.value ? selectedShippingAddress.value : selectedBillingAddress.value,
       notes: ''
     })
     

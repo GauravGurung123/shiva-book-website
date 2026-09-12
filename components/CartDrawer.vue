@@ -162,9 +162,15 @@ const removeItem = async (item: CartItem) => {
   }
 }
 
+const { isAuthenticated } = useAuth()
+
 const goToCheckout = () => {
   closeDrawer()
-  navigateTo('/checkout')
+  if (!isAuthenticated.value) {
+    navigateTo('/login')
+  } else {
+    navigateTo('/checkout')
+  }
 }
 </script>
 
