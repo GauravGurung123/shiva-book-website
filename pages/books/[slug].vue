@@ -141,15 +141,21 @@
                 </div>
               </div>
               
+              <!-- Cart Error Message -->
+              <div v-if="cartError" class="mb-4 bg-red-50 border border-red-200 rounded-lg p-3">
+                <p class="text-red-600 text-sm">{{ cartError }}</p>
+              </div>
+              
               <button 
                 @click="handleAddToCart"
-                :disabled="book.stock_quantity === 0"
+                :disabled="book.stock_quantity === 0 || cartLoading"
                 class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg v-if="!cartLoading" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                {{ book.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart' }}
+                <div v-else class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                {{ cartLoading ? 'Adding...' : (book.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart') }}
               </button>
             </div>
           </div>
@@ -162,6 +168,12 @@
       </div>
     </div>
   </div>
+  
+  <!-- Cart Drawer -->
+  <CartDrawer 
+    :is-open="isCartDrawerOpen" 
+    @close="isCartDrawerOpen = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -169,11 +181,14 @@ import type { Book } from '~/types'
 
 const route = useRoute()
 const { fetchBookBySlug } = useBooks()
+const { addToCart } = useCart()
 
 const book = ref<Book | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const quantity = ref(1)
+const cartLoading = ref(false)
+const cartError = ref<string | null>(null)
 
 const loadBook = async () => {
   loading.value = true
@@ -210,15 +225,30 @@ const decrementQuantity = () => {
   }
 }
 
-const handleAddToCart = () => {
-  if (book.value) {
+const isCartDrawerOpen = ref(false)
+
+const handleAddToCart = async () => {
+  if (!book.value) return
+  
+  cartLoading.value = true
+  cartError.value = null
+  
+  try {
+    await addToCart({
+      book_id: book.value.id,
+      quantity: quantity.value
+    })
     console.log('Added to cart:', {
       book: book.value.title,
-      quantity: quantity.value,
-      price: book.value.final_price || book.value.price
+      quantity: quantity.value
     })
-    // TODO: Implement cart functionality
-    // You can use Pinia store or localStorage to manage cart
+    // Open cart drawer after successful add
+    isCartDrawerOpen.value = true
+  } catch (err: any) {
+    cartError.value = err.message || 'Failed to add to cart'
+    console.error('Error adding to cart:', err)
+  } finally {
+    cartLoading.value = false
   }
 }
 

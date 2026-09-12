@@ -161,3 +161,119 @@ export interface SettingResponse {
   data: Setting
   value: string
 }
+
+// Cart Types
+export interface Cart {
+  id: number
+  user_id: number | null
+  session_id: string
+  total: number
+  total_quantity: number
+  items: CartItem[]
+  created_at: string
+  updated_at: string
+}
+
+export interface CartItem {
+  id: number
+  cart_id: number
+  book_id: number
+  quantity: number
+  price: number
+  subtotal: number
+  book: Book
+  created_at: string
+  updated_at: string
+}
+
+export interface CartResponse {
+  data: Cart
+}
+
+export interface AddToCartData {
+  book_id: number
+  quantity: number
+}
+
+export interface UpdateQuantityData {
+  quantity: number
+}
+
+// Order Types
+export interface Address {
+  id: number
+  full_name: string
+  address_line_1: string
+  address_line_2?: string
+  city: string
+  state?: string
+  postal_code: string
+  country: string
+  phone?: string
+}
+
+export interface CreateOrderData {
+  shipping_address_id: number
+  billing_address_id: number
+  coupon_id?: number | null
+  notes?: string
+}
+
+export interface Order {
+  id: number
+  user_id: number
+  order_number: string
+  status: string
+  total_amount: number
+  shipping_address: Address
+  billing_address: Address
+  coupon_id?: number
+  notes?: string
+  created_at: string
+  updated_at: string
+  items: OrderItem[]
+}
+
+export interface OrderItem {
+  id: number
+  order_id: number
+  book_id: number
+  book: Book
+  quantity: number
+  price: number
+  subtotal: number
+}
+
+export interface OrdersResponse {
+  data: Order[]
+  current_page: number
+  per_page: number
+  total: number
+  last_page: number
+}
+
+// Payment Types
+export type PaymentMethod = 'card' | 'paypal' | 'cod' | 'bank_transfer' | 'iban_transfer' | 'multibanco' | 'mb_way'
+
+export interface CreatePaymentData {
+  payment_method: PaymentMethod
+  payment_reference: string
+}
+
+export interface CreatePaymentWithScreenshotData {
+  payment_method: PaymentMethod
+  payment_reference: string
+  screenshot: File
+}
+
+export interface Payment {
+  id: number
+  order_id: number
+  payment_method: PaymentMethod
+  payment_reference: string
+  amount: number
+  status: string
+  screenshot_url?: string
+  created_at: string
+  updated_at: string
+}

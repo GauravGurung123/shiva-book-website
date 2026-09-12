@@ -1,16 +1,34 @@
 export const useApi = () => {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase
+  const accessToken = useCookie('access_token')
+  const sessionId = useCookie('session_id')
 
   const fetchFromApi = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
     try {
+      const headers: Record<string, string> = {
+        'Accept': 'application/json',
+        ...options.headers as Record<string, string>
+      }
+
+      // Add Content-Type for non-multipart requests
+      if (!(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json'
+      }
+
+      // Add Authorization header if token exists
+      if (accessToken.value) {
+        headers['Authorization'] = `Bearer ${accessToken.value}`
+      }
+
+      // Add X-Session-ID header if session exists
+      if (sessionId.value) {
+        headers['X-Session-ID'] = sessionId.value
+      }
+
       const response = await fetch(`${apiBase}${endpoint}`, {
         ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          ...options.headers
-        }
+        headers
       })
 
       if (!response.ok) {
@@ -35,6 +53,13 @@ export const useApi = () => {
     })
   }
 
+  const postFormData = <T>(endpoint: string, formData: FormData): Promise<T> => {
+    return fetchFromApi<T>(endpoint, {
+      method: 'POST',
+      body: formData
+    })
+  }
+
   const put = <T>(endpoint: string, data: any): Promise<T> => {
     return fetchFromApi<T>(endpoint, {
       method: 'PUT',
@@ -49,6 +74,7 @@ export const useApi = () => {
   return {
     get,
     post,
+    postFormData,
     put,
     delete: del,
     apiBase
