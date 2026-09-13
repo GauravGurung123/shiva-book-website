@@ -209,6 +209,7 @@ export interface Address {
   state?: string
   postal_code: string
   country: string
+  country_uuid: string
   phone?: string
   is_default?: boolean
 }

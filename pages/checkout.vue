@@ -50,7 +50,7 @@
               <div 
                 v-for="address in addresses" 
                 :key="address.id"
-                @click="selectedShippingAddress = address.id"
+                @click="selectedShippingAddress = address.id;shippingCountryUuid = address.country_uuid"
                 class="p-4 border rounded-lg cursor-pointer transition"
                 :class="selectedShippingAddress === address.id ? 'border-primary-600 bg-primary-50' : 'border-gray-200 hover:border-gray-300'"
               >
@@ -238,11 +238,13 @@
               </div>
               <div class="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>Calculated at next step</span>
+                <span v-if="loadingShippingFee">Calculating...</span>
+                <span v-else-if="shippingFee > 0">€{{ shippingFee.toFixed(2) }}</span>
+                <span v-else>Select shipping address</span>
               </div>
               <div class="border-t border-gray-200 pt-3 flex justify-between text-lg font-bold text-gray-800">
                 <span>Total</span>
-                <span>€{{ (parseFloat(cart.total || 0) - discountAmount).toFixed(2) }}</span>
+                <span>€{{ (parseFloat(cart.total || 0) - discountAmount + shippingFee).toFixed(2) }}</span>
               </div>
             </div>
             
@@ -276,6 +278,9 @@ const discountAmount = ref(0)
 const applyingDiscount = ref(false)
 const discountError = ref('')
 const discountSuccess = ref('')
+const shippingCountryUuid = ref<string | null>(null)
+const shippingFee = ref(0)
+const loadingShippingFee = ref(false)
 const updatingQuantity = ref(false)
 
 // Address selection
@@ -306,9 +311,11 @@ const fetchAddresses = async () => {
     if (defaultAddress) {
       selectedShippingAddress.value = defaultAddress.id
       selectedBillingAddress.value = defaultAddress.id
+      shippingCountryUuid.value = defaultAddress.country_uuid
     } else if (addresses.value.length > 0) {
       selectedShippingAddress.value = addresses.value[0].id
       selectedBillingAddress.value = addresses.value[0].id
+      shippingCountryUuid.value = addresses.value[0].country_uuid
     }
   } catch (err) {
     console.error('Error fetching addresses:', err)
@@ -330,6 +337,15 @@ watch(selectedShippingAddress, (newValue) => {
   }
 })
 
+// Watch shippingCountryUuid to recalculate shipping fee
+watch([shippingCountryUuid, cart], () => {
+  if (shippingCountryUuid.value && cart.value?.items.length > 0) {
+    fetchShippingFee()
+  } else {
+    shippingFee.value = 0
+  }
+}, { deep: true })
+
 const updateItemQuantity = async (item: CartItem, newQuantity: number) => {
   if (newQuantity < 1) return
   
@@ -340,6 +356,30 @@ const updateItemQuantity = async (item: CartItem, newQuantity: number) => {
     console.error('Error updating quantity:', err)
   } finally {
     updatingQuantity.value = false
+  }
+}
+
+const fetchShippingFee = async () => {
+  if (!shippingCountryUuid.value || !cart.value?.items.length) {
+    shippingFee.value = 0
+    return
+  }
+  
+  loadingShippingFee.value = true
+  try {
+    const { post } = useApi()
+    const quantity = cart.value.items.reduce((sum, item) => sum + item.quantity, 0)
+    const response = await post<{ data: { shipping_fee: number } }>('/shipping/calculate', {
+      country_uuid: shippingCountryUuid.value,
+      quantity: quantity
+    })
+    console.log('Shipping fee response:', response.data.shipping_fee)
+    shippingFee.value = response.data.shipping_fee
+  } catch (err) {
+    console.error('Error calculating shipping fee:', err)
+    shippingFee.value = 0
+  } finally {
+    loadingShippingFee.value = false
   }
 }
 
