@@ -24,30 +24,30 @@
       <!-- User Actions -->
       <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <div class="space-y-4">
-          <div class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
+          <div @click="router.push('/orders')" class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
             <div>
               <h3 class="text-lg font-semibold text-gray-800">MY ORDERS</h3>
-              <p class="text-gray-600 text-sm">Find receipts and ongoing orders here.</p>
+              <p class="text-gray-600 text-sm">Upload your receipts and ongoing orders here.</p>
             </div>
             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
           </div>
 
-          <div class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
+          <div @click="router.push('/account/profile')" class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
             <div>
               <h3 class="text-lg font-semibold text-gray-800">MY PROFILE</h3>
-              <p class="text-gray-600 text-sm">Change your information and addresses.</p>
+              <p class="text-gray-600 text-sm">Change your name, email, and password.</p>
             </div>
             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
           </div>
 
-          <div class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
+          <div @click="router.push('/account/address')" class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
             <div>
-              <h3 class="text-lg font-semibold text-gray-800">MY FAVORITES</h3>
-              <p class="text-gray-600 text-sm">View your saved favorites here.</p>
+              <h3 class="text-lg font-semibold text-gray-800">My Address</h3>
+              <p class="text-gray-600 text-sm">Created, Edit or remove your saved addresses.</p>
             </div>
             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
