@@ -77,11 +77,11 @@
                 <div class="space-y-3">
                   <div class="flex justify-between items-center">
                     <span class="text-gray-600">IBAN:</span>
-                    <span class="font-mono font-bold text-gray-800">PT50 0002 0123 1234 5678 9015 4</span>
+                    <span class="font-mono font-bold text-gray-800">{{ shopIban || 'Loading...' }}</span>
                   </div>
                   <div class="flex justify-between items-center">
                     <span class="text-gray-600">Account holder:</span>
-                    <span class="font-bold text-gray-800">Your Name</span>
+                    <span class="font-bold text-gray-800">{{ shopAccountHolder || 'Loading...' }}</span>
                   </div>
                   <div class="flex justify-between items-center">
                     <span class="text-gray-600">Amount:</span>
@@ -242,6 +242,10 @@ const payment = ref<Payment | null>(null)
 const loading = ref(false)
 const error = ref('')
 
+// Shop settings
+const shopIban = ref('')
+const shopAccountHolder = ref('')
+
 // Payment form
 const paymentMethod = ref<'bank_transfer' | 'iban_transfer' | 'multibanco' | 'mb_way'>('bank_transfer')
 const paymentReference = ref('')
@@ -258,6 +262,7 @@ if (!isAuthenticated.value) {
 onMounted(async () => {
   await fetchOrder()
   await fetchPayment()
+  await fetchSettings()
 })
 
 const fetchOrder = async () => {
@@ -285,6 +290,20 @@ const fetchPayment = async () => {
   } catch (err) {
     // Payment might not exist yet
     payment.value = null
+  }
+}
+
+const fetchSettings = async () => {
+  try {
+    const [ibanResponse, accountHolderResponse] = await Promise.all([
+      get<{ data: { value: string } }>('/settings/key/shop_iban'),
+      get<{ data: { value: string } }>('/settings/key/shop_account_holder')
+    ])
+    shopIban.value = ibanResponse.data.value
+    shopAccountHolder.value = accountHolderResponse.data.value
+  } catch (err) {
+    console.error('Error fetching shop settings:', err)
+    // Keep default values if API fails
   }
 }
 
