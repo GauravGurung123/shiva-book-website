@@ -17,15 +17,6 @@
     <div class="container mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-8">
         <h1 class="text-3xl font-bold text-gray-800">My Addresses</h1>
-        <button
-          @click="openAddressModal()"
-          class="px-6 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition flex items-center space-x-2"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <span>Add New Address</span>
-        </button>
       </div>
 
       <!-- Address Cards Grid -->
@@ -221,7 +212,7 @@
                 />
               </div>
               <div>
-                <label class="block text-gray-700 font-medium mb-2">Province *</label>
+                <label class="block text-gray-700 font-medium mb-2">Province/State *</label>
                 <input
                   v-model="addressForm.state"
                   type="text"
