@@ -40,7 +40,7 @@
             <!-- No Addresses -->
             <div v-else-if="!addresses || addresses.length === 0" class="text-center py-8">
               <p class="text-gray-600 mb-4">No addresses found. Please add an address first.</p>
-              <NuxtLink to="/account/addresses" class="inline-block bg-primary-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-primary-700 transition">
+              <NuxtLink to="/account/address" class="inline-block bg-primary-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-primary-700 transition">
                 Add Address
               </NuxtLink>
             </div>
@@ -101,7 +101,7 @@
             <!-- No Addresses -->
             <div v-else-if="!addresses || addresses.length === 0" class="text-center py-8">
               <p class="text-gray-600 mb-4">No addresses found. Please add an address first.</p>
-              <NuxtLink to="/account/addresses" class="inline-block bg-primary-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-primary-700 transition">
+              <NuxtLink to="/account/address" class="inline-block bg-primary-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-primary-700 transition">
                 Add Address
               </NuxtLink>
             </div>
