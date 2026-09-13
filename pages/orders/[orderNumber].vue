@@ -280,7 +280,7 @@ const fetchPayment = async () => {
   if (!order.value) return
   
   try {
-    const response = await get<{ data: Payment }>(`/payments/orders/${order.value.id}`)
+    const response = await get<{ data: Payment }>(`/payments/orders/${order.value.order_number}`)
     payment.value = response.data
   } catch (err) {
     // Payment might not exist yet
@@ -346,7 +346,7 @@ const submitPayment = async () => {
       formData.append('screenshot', selectedFile.value)
     }
     
-    await post(`/payments/orders/${order.value.id}`, formData, {
+    await post(`/payments/orders/${order.value.order_number}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
