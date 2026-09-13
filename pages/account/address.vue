@@ -375,7 +375,8 @@ onMounted(async () => {
 
 const loadAddresses = async () => {
   try {
-    addresses.value = await getAddresses()
+    const response = await getAddresses()
+    addresses.value = response?.data
   } catch (error) {
     console.error('Failed to load addresses:', error)
   } finally {
@@ -385,7 +386,8 @@ const loadAddresses = async () => {
 
 const loadCountries = async () => {
   try {
-    countries.value = await getCountries('Europe')
+    const response = await getCountries('Europe')
+    countries.value = response?.data
   } catch (error) {
     console.error('Failed to load countries:', error)
   }

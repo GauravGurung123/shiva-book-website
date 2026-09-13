@@ -54,37 +54,37 @@ export const useAddress = () => {
 
   // Get countries list
   const getCountries = async (region: string = 'Europe'): Promise<Country[]> => {
-    return await get<Country[]>(`/ws/v1/countries?region=${region}`)
+    return await get<Country[]>(`/countries?region=${region}`)
   }
 
   // Get all user addresses
   const getAddresses = async (): Promise<Address[]> => {
-    return await get<Address[]>('/ws/v1/addresses')
+    return await get<Address[]>('/addresses')
   }
 
   // Get specific address
   const getAddress = async (id: number): Promise<Address> => {
-    return await get<Address>(`/ws/v1/addresses/${id}`)
+    return await get<Address>(`/addresses/${id}`)
   }
 
   // Create new address
   const createAddress = async (data: AddressFormData): Promise<Address> => {
-    return await post<Address>('/ws/v1/addresses', data)
+    return await post<Address>('/addresses', data)
   }
 
   // Update address
   const updateAddress = async (id: number, data: AddressFormData): Promise<Address> => {
-    return await post<Address>(`/ws/v1/addresses/${id}/update`, data)
+    return await post<Address>(`/addresses/${id}/update`, data)
   }
 
   // Set address as default
   const setDefaultAddress = async (id: number): Promise<Address> => {
-    return await post<Address>(`/ws/v1/addresses/${id}/set-default`, {})
+    return await post<Address>(`/addresses/${id}/set-default`, {})
   }
 
   // Delete address
   const deleteAddress = async (id: number): Promise<void> => {
-    await post<void>(`/ws/v1/addresses/${id}/delete`, {})
+    await post<void>(`/addresses/${id}/delete`, {})
   }
 
   return {
