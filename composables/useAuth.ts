@@ -8,30 +8,46 @@ export const useAuth = () => {
   const user = useState<User | null>('user', () => userCookie.value as User | null)
 
   // Generate PKCE code verifier and challenge
-  const generatePKCE = () => {
-    const codeVerifier = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('')
-    
-    const encoder = new TextEncoder()
-    const data = encoder.encode(codeVerifier)
-    crypto.subtle.digest('SHA-256', data).then(hash => {
-      const codeChallenge = Array.from(new Uint8Array(hash))
+  const generatePKCE = async () => {
+    // Generate code verifier with fallback
+    let codeVerifier: string
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      codeVerifier = Array.from(crypto.getRandomValues(new Uint8Array(32)))
         .map(b => b.toString(16).padStart(2, '0'))
         .join('')
-      return { codeVerifier, codeChallenge }
-    })
-    
-    // For simplicity, return a promise
-    return (async () => {
+    } else {
+      // Fallback for environments without crypto.getRandomValues
+      codeVerifier = Array.from({ length: 32 }, () => Math.floor(Math.random() * 256))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
+    }
+
+    // Generate code challenge with fallback
+    let codeChallenge: string
+    if (typeof crypto !== 'undefined' && crypto.subtle && crypto.subtle.digest) {
       const encoder = new TextEncoder()
       const data = encoder.encode(codeVerifier)
       const hash = await crypto.subtle.digest('SHA-256', data)
-      const codeChallenge = Array.from(new Uint8Array(hash))
+      codeChallenge = Array.from(new Uint8Array(hash))
         .map(b => b.toString(16).padStart(2, '0'))
         .join('')
-      return { codeVerifier, codeChallenge }
-    })()
+    } else {
+      // Fallback: simple hash for environments without crypto.subtle
+      codeChallenge = await simpleHash(codeVerifier)
+    }
+
+    return { codeVerifier, codeChallenge }
+  }
+
+  // Simple hash function as fallback for environments without crypto.subtle
+  const simpleHash = async (str: string): Promise<string> => {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16).padStart(64, '0')
   }
 
   // Register user
