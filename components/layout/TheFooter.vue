@@ -4,12 +4,14 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <div class="flex items-center space-x-3 mb-4">
+            <div v-if="logoLoading" class="h-14 w-14 bg-gray-200 animate-pulse rounded"></div>
             <img 
-              src="/logo.png" 
-              alt="NepaliBookInEurope Logo" 
+              v-else
+              :src="siteLogo" 
+              :alt="`${siteName} Logo`" 
               class="h-14 w-auto object-contain"
+              @load="logoLoading = false"
             />
-<!--            <h3 class="text-xl font-bold font-heading text-primary-400">NepaliBookInEurope</h3>-->
           </div>
           <p class="text-gray-400">Europe's premier Nepali bookstore. Bringing the best of Nepali literature to your doorstep.</p>
         </div>
@@ -75,6 +77,9 @@ import { useSettings } from '~/composables/useSettings'
 const { socialLinks, fetchActiveSocialLinks } = useSocialLinks()
 const { getSetting, fetchMultipleSettings } = useSettings()
 
+const siteLogo = ref('')
+const siteName = ref('NepaliBookInEurope')
+const logoLoading = ref(true)
 const contactEmail = ref('support@NepaliBookInEurope.com')
 const contactPhone = ref('+44 20 1234 5678')
 const contactAddress = ref('')
@@ -95,7 +100,10 @@ const getPlatformIcon = (platform: string): string => {
 }
 
 onMounted(async () => {
-  await fetchMultipleSettings(['contact_email', 'contact_phone', 'contact_address'])
+  await fetchMultipleSettings(['site_logo', 'site_name', 'contact_email', 'contact_phone', 'contact_address'])
+  siteLogo.value = getSetting('site_logo', '')
+  logoLoading.value = false
+  siteName.value = getSetting('site_name', 'NepaliBookInEurope')
   contactEmail.value = getSetting('contact_email', 'support@NepaliBookInEurope.com')
   contactPhone.value = getSetting('contact_phone', '+44 20 1234 5678')
   contactAddress.value = getSetting('contact_address', '')

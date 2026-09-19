@@ -5,10 +5,13 @@
         <!-- Logo -->
         <div class="flex items-center">
           <NuxtLink to="/" class="flex items-center space-x-3 group">
+            <div v-if="logoLoading" class="h-16 w-16 bg-gray-200 animate-pulse rounded"></div>
             <img 
+              v-else
               :src="siteLogo" 
               :alt="`${siteName} Logo`" 
               class="h-16 w-auto object-contain transition-transform group-hover:scale-105"
+              @load="logoLoading = false"
             />
           </NuxtLink>
         </div>
@@ -94,8 +97,9 @@ const { isAuthenticated, user } = useAuth()
 const { getSetting, fetchMultipleSettings } = useSettings()
 const { itemCount, fetchCart } = useCart()
 
-const siteLogo = ref('/logo.png')
+const siteLogo = ref('')
 const siteName = ref('NepaliBookInEurope')
+const logoLoading = ref(true)
 
 const navigationLinks: NavigationLink[] = [
   { label: 'Home', href: '/' },
@@ -121,7 +125,8 @@ const openCartDrawer = async () => {
 
 onMounted(async () => {
   await fetchMultipleSettings(['site_logo', 'site_name'])
-  siteLogo.value = getSetting('site_logo', '/logo.png')
+  siteLogo.value = getSetting('site_logo', '')
+  logoLoading.value = false
   siteName.value = getSetting('site_name', 'NepaliBookInEurope')
   await fetchCart()
 })
