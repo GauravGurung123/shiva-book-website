@@ -37,6 +37,16 @@
                 </span>
               </div>
               
+              <!-- Order Notes -->
+              <div v-if="order.notes" class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div class="flex items-start gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="text-sm text-yellow-800">{{ order.notes }}</p>
+                </div>
+              </div>
+              
               <!-- Order Items -->
               <div class="border-t border-gray-200 pt-6">
                 <h2 class="text-lg font-bold text-gray-800 mb-4 font-heading">Order Items</h2>
@@ -111,9 +121,9 @@
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"
                     >
                       <option value="bank_transfer">Bank Transfer</option>
-                      <option value="iban_transfer">IBAN Transfer</option>
-                      <option value="multibanco">Multibanco</option>
-                      <option value="mb_way">MB Way</option>
+<!--                      <option value="iban_transfer">IBAN Transfer</option>-->
+<!--                      <option value="multibanco">Multibanco</option>-->
+<!--                      <option value="mb_way">MB Way</option>-->
                     </select>
                   </div>
                   
@@ -129,7 +139,7 @@
                   </div>
                   
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Screenshot (Optional)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Screenshot <span class="text-red-500">(* Required)</span></label>
                     <input 
                       ref="fileInput"
                       type="file"
@@ -232,7 +242,7 @@
 import type { Order, Payment } from '~/types'
 
 const route = useRoute()
-const { get, post } = useApi()
+const { get, post, postFormData } = useApi()
 const { isAuthenticated } = useAuth()
 
 const orderNumber = route.params.orderNumber as string
@@ -365,11 +375,7 @@ const submitPayment = async () => {
       formData.append('screenshot', selectedFile.value)
     }
     
-    await post(`/payments/orders/${order.value.order_number}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+    await postFormData(`/payments/orders/${order.value.order_number}`, formData)
     
     paymentSuccess.value = 'Payment proof submitted successfully!'
     await fetchPayment()
