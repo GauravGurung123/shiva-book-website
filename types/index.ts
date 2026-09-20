@@ -12,6 +12,7 @@ export interface Book {
   discount_price?: number
   final_price?: number
   stock_quantity?: number
+  available_stock?: number
   photo_path?: string
   photo_url?: string
   language?: string

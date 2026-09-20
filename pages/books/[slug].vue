@@ -86,10 +86,10 @@
             <!-- Stock Status -->
             <div class="mb-6">
               <span 
-                :class="book.stock_quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                :class="book.available_stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                 class="px-3 py-1 rounded-full text-sm font-medium"
               >
-                {{ book.stock_quantity > 0 ? `In Stock (${book.stock_quantity} available)` : 'Out of Stock' }}
+                {{ book.available_stock > 0 ? `In Stock (${book.available_stock} available)` : 'Out of Stock' }}
               </span>
             </div>
             
@@ -133,7 +133,7 @@
                   <span class="px-4 py-2 text-gray-800 font-medium min-w-[60px] text-center">{{ quantity }}</span>
                   <button 
                     @click="incrementQuantity"
-                    :disabled="quantity >= (book.stock_quantity || 99)"
+                    :disabled="quantity >= (book.available_stock || 99)"
                     class="px-4 py-2 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                     +
@@ -148,14 +148,14 @@
               
               <button 
                 @click="handleAddToCart"
-                :disabled="book.stock_quantity === 0 || cartLoading"
+                :disabled="book.available_stock === 0 || cartLoading"
                 class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
               >
                 <svg v-if="!cartLoading" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <div v-else class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                {{ cartLoading ? 'Adding...' : (book.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart') }}
+                {{ cartLoading ? 'Adding...' : (book.available_stock === 0 ? 'Out of Stock' : 'Add to Cart') }}
               </button>
             </div>
           </div>
@@ -214,7 +214,7 @@ const loadBook = async () => {
 }
 
 const incrementQuantity = () => {
-  if (book.value && quantity.value < (book.value.stock_quantity || 99)) {
+  if (book.value && quantity.value < (book.value.available_stock || 99)) {
     quantity.value++
   }
 }

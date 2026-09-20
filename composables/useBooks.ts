@@ -138,6 +138,7 @@ export const useBooks = () => {
           discount_price: book.discount_price,
           final_price: book.final_price,
           stock_quantity: book.stock_quantity,
+          available_stock: book.available_stock,
           photo_path: book.photo_path,
           photo_url: book.photo_url,
           coverImage: book.photo_url || book.photo_path,
