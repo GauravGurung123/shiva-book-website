@@ -294,6 +294,88 @@ export const useBooks = () => {
       }
     }
   }
+
+  // Search books by query (minimum 2 characters)
+  const searchBooks = async (
+    query: string,
+    options: {
+      page?: number
+      perPage?: number
+      sortBy?: 'relevance' | 'price' | 'title' | 'newest' | 'oldest'
+      sortOrder?: 'asc' | 'desc'
+      minPrice?: number
+      maxPrice?: number
+      discountedOnly?: boolean
+      inStockOnly?: boolean
+    } = {}
+  ) => {
+    // Validate minimum 2 characters
+    if (!query || query.length < 2) {
+      return {
+        books: [] as Book[],
+        error: 'Search query must be at least 2 characters long'
+      }
+    }
+
+    try {
+      const params = new URLSearchParams({
+        q: query,
+        page: (options.page || 1).toString(),
+        per_page: (options.perPage || 12).toString(),
+        sort_by: options.sortBy || 'relevance',
+        sort_order: options.sortOrder || 'desc'
+      })
+
+      if (options.minPrice !== undefined) params.append('min_price', options.minPrice.toString())
+      if (options.maxPrice !== undefined) params.append('max_price', options.maxPrice.toString())
+      if (options.discountedOnly !== undefined) params.append('discounted_only', options.discountedOnly.toString())
+      if (options.inStockOnly !== undefined) params.append('in_stock_only', options.inStockOnly.toString())
+
+      const response = await get<any>(`/books/search?${params.toString()}`)
+      
+      // Handle different response structures
+      let booksData = response.data
+      if (response.data && response.data.data && Array.isArray(response.data.data)) {
+        booksData = response.data.data
+      }
+      
+      if (booksData && Array.isArray(booksData)) {
+        // Map API response to Book interface
+        const books = booksData.map((book: any) => ({
+          id: book.id?.toString() || book.slug,
+          title: book.title,
+          author: book.authors?.map((a: any) => a.name).join(', ') || book.author || 'Unknown Author',
+          price: book.final_price || book.price || '€0.00',
+          description: book.description,
+          coverImage: book.photo_url || book.photo_path || book.cover_image || book.coverImage,
+          slug: book.slug
+        }))
+        
+        return {
+          books,
+          pagination: {
+            currentPage: response.meta?.current_page || response.data?.meta?.current_page || 1,
+            lastPage: response.meta?.last_page || response.data?.meta?.last_page || 1,
+            perPage: response.meta?.per_page || response.data?.meta?.per_page || 12,
+            total: response.meta?.total || response.data?.meta?.total || books.length
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error searching books:', err)
+      throw err
+    }
+    
+    return {
+      books: [] as Book[],
+      pagination: {
+        currentPage: 1,
+        lastPage: 1,
+        perPage: 12,
+        total: 0
+      }
+    }
+  }
   
   // Legacy method for backward compatibility (fetches featured and new arrivals)
   const { data, pending: loading, error } = useAsyncData('books', async () => {
@@ -349,6 +431,7 @@ export const useBooks = () => {
     fetchNewestArrivals,
     fetchBookBySlug,
     fetchBooksByCategory,
-    fetchBooksByAuthor
+    fetchBooksByAuthor,
+    searchBooks
   }
 }

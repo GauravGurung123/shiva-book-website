@@ -39,6 +39,11 @@
           </NuxtLink>
         </nav>
         
+        <!-- Search Bar -->
+        <div class="hidden md:block w-64 lg:w-80">
+          <SearchBar />
+        </div>
+
         <!-- Auth & Cart -->
         <div class="flex items-center space-x-4">
           <!-- Show login link when not authenticated -->
@@ -104,10 +109,8 @@ const logoLoading = ref(true)
 const navigationLinks: NavigationLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Categories', href: '/categories' },
-  { label: 'Authors', href: '/authors' },
   { label: 'Books', href: '/books' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Featured', href: '/featured' },
   { label: 'New Arrivals', href: '/new-arrivals' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' }
