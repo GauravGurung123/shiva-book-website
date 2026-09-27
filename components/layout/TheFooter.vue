@@ -28,9 +28,9 @@
           <h4 class="font-semibold mb-4 text-primary-400 font-heading">Customer Service</h4>
           <ul class="space-y-2 text-gray-400">
             <li><a href="#" class="hover:text-primary-400 transition">Shipping Info</a></li>
-            <li><a href="#" class="hover:text-primary-400 transition">Returns</a></li>
+            <li><NuxtLink to="/returns-and-refunds" class="hover:text-primary-400 transition">Returns and withdrawal</NuxtLink></li>
             <li><a href="#" class="hover:text-primary-400 transition">Order Tracking</a></li>
-            <li><a href="#" class="hover:text-primary-400 transition">Privacy Policy</a></li>
+            <li><NuxtLink to="/privacy-policy" class="hover:text-primary-400 transition">Privacy Policy</NuxtLink></li>
           </ul>
         </div>
         <div>
