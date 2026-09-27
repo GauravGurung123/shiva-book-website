@@ -1,30 +1,29 @@
 import type { FAQ } from '~/types'
 
 export const useFAQs = () => {
-  const faqs: FAQ[] = [
-    {
-      id: 1,
-      question: 'How long does delivery take?',
-      answer: 'We deliver within 1-2 business days across Europe.'
-    },
-    {
-      id: 2,
-      question: 'What is your return policy?',
-      answer: 'We offer 15-day returns on all orders. Books must be in original condition.'
-    },
-    {
-      id: 3,
-      question: 'Do you ship internationally?',
-      answer: 'Currently we ship across all European countries.'
-    },
-    {
-      id: 4,
-      question: 'How can I track my order?',
-      answer: 'You\'ll receive a tracking number via email once your order is dispatched.'
+  const { get } = useApi()
+  const faqs = ref<FAQ[]>([])
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+
+  const fetchFAQs = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await get<{ data: FAQ[] }>('/faqs/all')
+      faqs.value = response.data
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to fetch FAQs'
+      console.error('Failed to fetch FAQs:', err)
+    } finally {
+      loading.value = false
     }
-  ]
+  }
 
   return {
-    faqs
+    faqs,
+    loading,
+    error,
+    fetchFAQs
   }
 }

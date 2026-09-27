@@ -53,7 +53,11 @@ const { featuredBooks, newArrivals, loading: booksLoading, error: booksError } =
 const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
 const { authors, loading: authorsLoading, error: authorsError } = useAuthors()
 const { publishers, loading: publishersLoading, error: publishersError } = usePublishers()
-const { faqs } = useFAQs()
+const { faqs, fetchFAQs } = useFAQs()
+
+onMounted(() => {
+  fetchFAQs()
+})
 
 const handleAddToCart = (book: any) => {
   console.log('Added to cart:', book.title)

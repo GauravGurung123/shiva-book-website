@@ -36,6 +36,13 @@ export interface FAQ {
   id: number
   question: string
   answer: string
+  category?: string
+  sort_order?: number
+  is_active?: boolean
+  created_by?: number
+  creator?: any
+  created_at?: string
+  updated_at?: string
 }
 
 export interface Benefit {
