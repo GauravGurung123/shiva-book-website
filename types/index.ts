@@ -111,7 +111,8 @@ export interface User {
 export interface AuthResponse {
   message: string
   data: User
-  next_step: string
+  next_step?: string
+  requires_email_verification?: boolean
 }
 
 export interface RegisterData {

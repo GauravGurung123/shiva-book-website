@@ -296,6 +296,24 @@ export const useAuth = () => {
     return userData
   }
 
+  // Verify email
+  const verifyEmail = async (token: string): Promise<void> => {
+    const response = await fetch(`${apiBase}/auth/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ token })
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Email verification failed')
+    }
+  }
+
   // Logout user
   const logout = async (): Promise<void> => {
     if (!accessToken.value) {
@@ -323,6 +341,7 @@ export const useAuth = () => {
     login,
     logout,
     fetchUser,
+    verifyEmail,
     getAuthorizationUrl,
     authorize,
     exchangeToken,

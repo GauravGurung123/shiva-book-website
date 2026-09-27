@@ -193,7 +193,12 @@ const handleLogin = async () => {
     await completeOAuthFlow()
     router.push('/')
   } catch (err: any) {
-    error.value = err.message || 'Login failed'
+    // Check if error is due to unverified email
+    if (err.message && err.message.includes('403')) {
+      error.value = 'Please verify your email address before logging in.'
+    } else {
+      error.value = err.message || 'Login failed'
+    }
   } finally {
     loading.value = false
   }
@@ -210,10 +215,19 @@ const handleSignup = async () => {
   error.value = ''
   
   try {
-    await register(signupForm.value)
-    // After successful registration, complete OAuth flow to get access token
-    await completeOAuthFlow()
-    router.push('/')
+    const result = await register(signupForm.value)
+    
+    // Store email for verification page
+    sessionStorage.setItem('registration_email', signupForm.value.email)
+    
+    // Check if email verification is required
+    if (result.requires_email_verification) {
+      router.push('/verify-email-sent')
+    } else {
+      // After successful registration, complete OAuth flow to get access token
+      await completeOAuthFlow()
+      router.push('/')
+    }
   } catch (err: any) {
     error.value = err.message || 'Registration failed'
   } finally {
