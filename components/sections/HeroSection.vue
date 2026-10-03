@@ -5,12 +5,12 @@
       <h3 class="text-3xl md:text-4xl font-semibold mb-6 font-heading">Starts Here</h3>
       <p class="text-xl mb-8 opacity-90 font-heading">Europe's Premier Nepali Bookstore</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition font-heading shadow-lg hover:shadow-xl">
+        <NuxtLink to="/books" class="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition font-heading shadow-lg hover:shadow-xl text-center">
           Browse All Books
-        </button>
-        <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition font-heading shadow-lg hover:shadow-xl">
-          Shop by Genre
-        </button>
+        </NuxtLink>
+        <NuxtLink to="/categories" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition font-heading shadow-lg hover:shadow-xl text-center">
+          Shop by Category
+        </NuxtLink>
       </div>
     </div>
   </section>
