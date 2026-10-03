@@ -274,10 +274,10 @@ export const useBooks = () => {
           books,
           author: response.data.author,
           pagination: {
-            currentPage: response.data.meta?.current_page || response.data.current_page || 1,
-            lastPage: response.data.meta?.last_page || response.data.last_page || 1,
-            perPage: response.data.meta?.per_page || response.data.per_page || 12,
-            total: response.data.meta?.total || response.data.total || 0
+            currentPage: response.meta?.current_page || response.data.current_page || 1,
+            lastPage: response.meta?.last_page || response.data.last_page || 1,
+            perPage: response.meta?.per_page || response.data.per_page || 12,
+            total: response.meta?.total || response.data.total || 0
           }
         }
       }
@@ -343,10 +343,10 @@ export const useBooks = () => {
           books,
           publisher: response.data.publisher,
           pagination: {
-            currentPage: response.data.meta?.current_page || response.data.current_page || 1,
-            lastPage: response.data.meta?.last_page || response.data.last_page || 1,
-            perPage: response.data.meta?.per_page || response.data.per_page || 12,
-            total: response.data.meta?.total || response.data.total || 0
+            currentPage: response.meta?.current_page || response.data.current_page || 1,
+            lastPage: response.meta?.last_page || response.data.last_page || 1,
+            perPage: response.meta?.per_page || response.data.per_page || 12,
+            total: response.meta?.total || response.data.total || 0
           }
         }
       }
