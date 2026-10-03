@@ -16,16 +16,17 @@
       <!-- Authors Grid -->
       <div v-else>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <div 
+          <NuxtLink 
             v-for="author in displayAuthors" 
             :key="author.id"
-            class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group"
+            :to="`/authors/${author.slug}`"
+            class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer text-center border border-gray-100 hover:border-primary-200 group block"
           >
             <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-xl font-bold text-primary-600 group-hover:from-primary-200 group-hover:to-primary-300 transition">
               {{ getInitials(author.name) }}
             </div>
             <h3 class="font-semibold text-gray-700 group-hover:text-primary-600 transition font-heading">{{ author.name }}</h3>
-          </div>
+          </NuxtLink>
         </div>
         
         <!-- View More Button -->

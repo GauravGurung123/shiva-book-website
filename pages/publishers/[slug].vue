@@ -1,20 +1,23 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Category Header -->
-      <div v-if="category" class="mb-8">
-        <div class="flex items-center gap-4 mb-4">
-          <div class="text-5xl">{{ category.icon }}</div>
+      <!-- Publisher Header -->
+      <div v-if="publisher" class="mb-8">
+        <div class="flex items-center gap-6 mb-4">
+          <div class="w-24 h-24 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-4xl">
+            📚
+          </div>
           <div>
-            <h1 class="text-4xl font-bold text-gray-800 font-heading">{{ category.name }}</h1>
+            <h1 class="text-4xl font-bold text-gray-800 font-heading">{{ publisher.name }}</h1>
             <p class="text-gray-600 mt-1">{{ pagination.total }} books found</p>
+            <p v-if="publisher.description" class="text-gray-500 mt-2 max-w-2xl">{{ publisher.description }}</p>
           </div>
         </div>
-        <NuxtLink to="/categories" class="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1">
+        <NuxtLink to="/publishers" class="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Back to Categories
+          Back to Publishers
         </NuxtLink>
       </div>
       
@@ -150,7 +153,7 @@
         
         <!-- Empty State -->
         <div v-if="books.length === 0 && !loading" class="text-center py-12">
-          <p class="text-gray-600 font-heading">No books found in this category.</p>
+          <p class="text-gray-600 font-heading">No books found by this publisher.</p>
         </div>
       </div>
     </div>
@@ -159,15 +162,15 @@
 
 <script setup lang="ts">
 import { useBooks } from '~/composables/useBooks'
-import { useCategories } from '~/composables/useCategories'
+import { usePublishers } from '~/composables/usePublishers'
 import BookCard from "~/components/common/BookCard.vue";
 
 const route = useRoute()
-const { fetchBooksByCategory } = useBooks()
-const { fetchAllCategories } = useCategories()
+const { fetchBooksByPublisher } = useBooks()
+const { fetchAllPublishers } = usePublishers()
 
 const books = ref<any[]>([])
-const category = ref<any>(null)
+const publisher = ref<any>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const pagination = ref({
@@ -186,21 +189,21 @@ const filters = ref({
   sortOrder: 'desc'
 })
 
-const loadCategoryBooks = async (page: number = 1) => {
+const loadPublisherBooks = async (page: number = 1) => {
   loading.value = true
   error.value = null
   
   try {
     const slug = route.params.slug as string
     
-    // Load category info from API response or fallback to categories list
-    if (!category.value) {
-      const allCategories = await fetchAllCategories()
-      category.value = allCategories.find((c: any) => c.slug === slug)
+    // Load publisher info from API response or fallback to publishers list
+    if (!publisher.value) {
+      const allPublishers = await fetchAllPublishers()
+      publisher.value = allPublishers.find((p: any) => p.slug === slug)
     }
     
-    // Load books for this category with filters
-    const result = await fetchBooksByCategory(
+    // Load books for this publisher with filters
+    const result = await fetchBooksByPublisher(
       slug,
       page,
       12,
@@ -216,25 +219,25 @@ const loadCategoryBooks = async (page: number = 1) => {
     
     books.value = result.books
     
-    // Update category info from API response if available
-    if (result.category) {
-      category.value = {
-        ...category.value,
-        ...result.category
+    // Update publisher info from API response if available
+    if (result.publisher) {
+      publisher.value = {
+        ...publisher.value,
+        ...result.publisher
       }
     }
-
+    
     pagination.value = result.pagination
   } catch (err: any) {
-    error.value = err.message || 'Failed to load category books'
-    console.error('Error loading category books:', err)
+    error.value = err.message || 'Failed to load publisher books'
+    console.error('Error loading publisher books:', err)
   } finally {
     loading.value = false
   }
 }
 
 const applyFilters = () => {
-  loadCategoryBooks(1)
+  loadPublisherBooks(1)
 }
 
 const clearFilters = () => {
@@ -246,25 +249,25 @@ const clearFilters = () => {
     sortBy: 'newest',
     sortOrder: 'desc'
   }
-  loadCategoryBooks(1)
+  loadPublisherBooks(1)
 }
 
 const goToPage = (page: number) => {
   if (page >= 1 && page <= pagination.value.lastPage) {
-    loadCategoryBooks(page)
+    loadPublisherBooks(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
 // Load books when route changes
 watch(() => route.params.slug, () => {
-  category.value = null
+  publisher.value = null
   clearFilters()
 })
 
 // Load initial page
 onMounted(() => {
-  loadCategoryBooks(1)
+  loadPublisherBooks(1)
 })
 
 definePageMeta({

@@ -201,15 +201,14 @@ export const useBooks = () => {
           coverImage: book.photo_url || book.photo_path || book.cover_image || book.coverImage,
           slug: book.slug
         }))
-        
         return {
           books,
           category: response.data.category,
           pagination: {
-            currentPage: response.data.meta?.current_page || response.data.current_page || 1,
-            lastPage: response.data.meta?.last_page || response.data.last_page || 1,
-            perPage: response.data.meta?.per_page || response.data.per_page || 12,
-            total: response.data.meta?.total || response.data.total || 0
+            currentPage: response.meta?.current_page || response.data.current_page || 1,
+            lastPage: response.meta?.last_page || response.data.last_page || 1,
+            perPage: response.meta?.per_page || response.data.per_page || 12,
+            total: response.meta?.total || response.data.total || 0
           }
         }
       }
@@ -290,6 +289,75 @@ export const useBooks = () => {
     return {
       books: [] as Book[],
       author: null,
+      pagination: {
+        currentPage: 1,
+        lastPage: 1,
+        perPage: 12,
+        total: 0
+      }
+    }
+  }
+
+  // Fetch books by publisher slug
+  const fetchBooksByPublisher = async (
+    publisherSlug: string,
+    page: number = 1,
+    perPage: number = 12,
+    sortBy: string = 'newest',
+    sortOrder: string = 'desc',
+    filters: {
+      minPrice?: number
+      maxPrice?: number
+      discountedOnly?: boolean
+      inStockOnly?: boolean
+    } = {}
+  ) => {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        per_page: perPage.toString(),
+        sort_by: sortBy,
+        sort_order: sortOrder
+      })
+      
+      if (filters.minPrice !== undefined) params.append('min_price', filters.minPrice.toString())
+      if (filters.maxPrice !== undefined) params.append('max_price', filters.maxPrice.toString())
+      if (filters.discountedOnly !== undefined) params.append('discounted_only', filters.discountedOnly.toString())
+      if (filters.inStockOnly !== undefined) params.append('in_stock_only', filters.inStockOnly.toString())
+      
+      const response = await get<any>(`/publishers/${publisherSlug}?${params.toString()}`)
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Map API response to Book interface
+        const books = response.data.map((book: any) => ({
+          id: book.id?.toString() || book.slug,
+          title: book.title,
+          author: book.authors?.map((a: any) => a.name).join(', ') || book.author || 'Unknown Author',
+          price: book.final_price || book.price || '€0.00',
+          description: book.description,
+          coverImage: book.photo_url || book.photo_path || book.cover_image || book.coverImage,
+          slug: book.slug
+        }))
+        
+        return {
+          books,
+          publisher: response.data.publisher,
+          pagination: {
+            currentPage: response.data.meta?.current_page || response.data.current_page || 1,
+            lastPage: response.data.meta?.last_page || response.data.last_page || 1,
+            perPage: response.data.meta?.per_page || response.data.per_page || 12,
+            total: response.data.meta?.total || response.data.total || 0
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching books by publisher:', err)
+      throw err
+    }
+    
+    return {
+      books: [] as Book[],
+      publisher: null,
       pagination: {
         currentPage: 1,
         lastPage: 1,
@@ -436,6 +504,7 @@ export const useBooks = () => {
     fetchBookBySlug,
     fetchBooksByCategory,
     fetchBooksByAuthor,
+    fetchBooksByPublisher,
     searchBooks
   }
 }
