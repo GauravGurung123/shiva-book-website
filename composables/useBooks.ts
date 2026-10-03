@@ -91,9 +91,13 @@ export const useBooks = () => {
   }
   
   // Fetch newest arrivals
-  const fetchNewestArrivals = async () => {
+  const fetchNewestArrivals = async (days: number = 7, limit: number = null) => {
     try {
-      const response = await get<any>('/ref-books/newest-arrivals')
+      const params = new URLSearchParams()
+      if (days) params.append('days', days.toString())
+      if (limit) params.append('limit', limit.toString())
+      
+      const response = await get<any>(`/ref-books/newest-arrivals?${params.toString()}`)
       
       if (response.data && Array.isArray(response.data)) {
         // Map API response to Book interface

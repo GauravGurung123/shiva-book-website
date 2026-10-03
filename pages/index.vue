@@ -17,12 +17,12 @@
       :loading="publishersLoading" 
       :error="publishersError" 
     />
-    <FeaturedBooksSection 
-      :books="featuredBooks" 
-      :loading="booksLoading" 
-      :error="booksError"
-      @add-to-cart="handleAddToCart" 
-    />
+<!--    <FeaturedBooksSection -->
+<!--      :books="featuredBooks" -->
+<!--      :loading="booksLoading" -->
+<!--      :error="booksError"-->
+<!--      @add-to-cart="handleAddToCart" -->
+<!--    />-->
     <NewArrivalsSection 
       :books="newArrivals" 
       :loading="booksLoading" 
@@ -49,14 +49,32 @@ import NewArrivalsSection from "~/components/sections/NewArrivalsSection.vue";
 import WhyChooseUsSection from "~/components/sections/WhyChooseUsSection.vue";
 import FAQSection from "~/components/sections/FAQSection.vue";
 
-const { featuredBooks, newArrivals, loading: booksLoading, error: booksError } = useBooks()
+const { featuredBooks, fetchNewestArrivals, fetchFeaturedBooks } = useBooks()
 const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
 const { authors, loading: authorsLoading, error: authorsError } = useAuthors()
 const { publishers, loading: publishersLoading, error: publishersError } = usePublishers()
 const { faqs, fetchFAQs } = useFAQs()
 
+const newArrivals = ref<any[]>([])
+const booksLoading = ref(false)
+const booksError = ref<string | null>(null)
+
+const loadNewArrivals = async () => {
+  booksLoading.value = true
+  booksError.value = null
+  try {
+    newArrivals.value = await fetchNewestArrivals(7)
+  } catch (err: any) {
+    booksError.value = err.message || 'Failed to load new arrivals'
+    console.error('Error loading new arrivals:', err)
+  } finally {
+    booksLoading.value = false
+  }
+}
+
 onMounted(() => {
   fetchFAQs()
+  loadNewArrivals()
 })
 
 const handleAddToCart = (book: any) => {
