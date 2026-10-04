@@ -69,6 +69,17 @@
           <h2 class="text-2xl font-bold text-gray-800 mb-6 font-heading">Send us a Message</h2>
           
           <form @submit.prevent="handleSubmit" class="space-y-4">
+            <!-- Success Message -->
+            <div v-if="submitSuccess" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+              <p class="font-medium">Thank you for your message!</p>
+              <p class="text-sm">We will get back to you soon.</p>
+            </div>
+
+            <!-- Error Message -->
+            <div v-if="submitError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+              <p class="font-medium">Error</p>
+              <p class="text-sm">{{ submitError }}</p>
+            </div>
             <div>
               <label class="block text-gray-700 font-medium mb-2">Name</label>
               <input 
@@ -115,9 +126,16 @@
 
             <button 
               type="submit"
-              class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading"
+              :disabled="isSubmitting"
+              class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-lg hover:shadow-xl font-heading disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
-              Send Message
+              <span v-if="isSubmitting" class="animate-spin">
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </span>
+              <span>{{ isSubmitting ? 'Sending...' : 'Send Message' }}</span>
             </button>
           </form>
         </div>
@@ -137,12 +155,18 @@ const contactEmail = ref('support@NepaliBookInEurope.com')
 const contactPhone = ref('+44 20 1234 5678')
 const contactAddress = ref('')
 
+const { post } = useApi()
+
 const formData = ref({
   name: '',
   email: '',
   subject: '',
   message: ''
 })
+
+const isSubmitting = ref(false)
+const submitSuccess = ref(false)
+const submitError = ref('')
 
 const getPlatformIcon = (platform: string): string => {
   const icons: Record<string, string> = {
@@ -159,15 +183,25 @@ const getPlatformIcon = (platform: string): string => {
   return icons[platform.toLowerCase()] || '🔗'
 }
 
-const handleSubmit = () => {
-  console.log('Form submitted:', formData.value)
-  // TODO: Implement form submission
-  alert('Thank you for your message! We will get back to you soon.')
-  formData.value = {
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+const handleSubmit = async () => {
+  isSubmitting.value = true
+  submitError.value = ''
+  submitSuccess.value = false
+  
+  try {
+    await post('/contact/submit', formData.value)
+    submitSuccess.value = true
+    formData.value = {
+      name: '',
+      email: '',
+      subject: '',
+      message: ''
+    }
+  } catch (err) {
+    console.error('Error submitting form:', err)
+    submitError.value = 'Failed to send message. Please try again later.'
+  } finally {
+    isSubmitting.value = false
   }
 }
 
