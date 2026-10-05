@@ -112,7 +112,7 @@
               
               <!-- Payment Proof Upload -->
               <div v-if="!hasPayment" class="border-t border-gray-200 pt-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-4 font-heading">Upload Payment Proof</h3>
+                <h3 class="text-lg font-bold text-gray-800 mb-4 font-heading">Upload Payment asd Proof</h3>
                 <form @submit.prevent="submitPayment" class="space-y-4">
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
@@ -158,13 +158,27 @@
                     {{ submittingPayment ? 'Submitting...' : 'Submit Payment Proof' }}
                   </button>
                 </form>
-                
+
                 <div v-if="paymentError" class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
                   <p class="text-red-600">{{ paymentError }}</p>
                 </div>
                 
                 <div v-if="paymentSuccess" class="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
                   <p class="text-green-600">{{ paymentSuccess }}</p>
+                </div>
+
+                <!-- Cancel Order Button (for pending orders) -->
+                <div v-if="order.status === 'pending'" class="mt-6 pt-6 border-t border-gray-200">
+                  <button
+                      @click="cancelOrder"
+                      :disabled="cancellingOrder"
+                      class="inline-flex items-center gap-2 bg-red-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    {{ cancellingOrder ? 'Cancelling...' : 'Cancel Order' }}
+                  </button>
                 </div>
               </div>
               
@@ -193,6 +207,18 @@
                 <div v-if="order.status === 'cancelled'" class="bg-red-50 border border-red-200 rounded-lg p-4">
                   <p class="text-red-600">This order has been cancelled. If you still want these items, please create a new order.</p>
                 </div>
+              </div>
+              <!-- Request Return Button (for delivered orders) -->
+              <div v-if="order.status === 'delivered'" class="mt-6 pt-6 border-t border-gray-200">
+                <NuxtLink 
+                  :to="`/orders/${order.order_number}/return`"
+                  class="inline-flex items-center gap-2 bg-orange-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-orange-700 transition"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Request Return
+                </NuxtLink>
               </div>
             </div>
           </div>
@@ -263,6 +289,9 @@ const selectedFile = ref<File | null>(null)
 const submittingPayment = ref(false)
 const paymentError = ref('')
 const paymentSuccess = ref('')
+
+// Cancel order
+const cancellingOrder = ref(false)
 
 // Redirect if not authenticated
 if (!isAuthenticated.value) {
@@ -385,5 +414,27 @@ const submitPayment = async () => {
   } finally {
     submittingPayment.value = false
   }
+}
+
+const cancelOrder = async () => {
+  showCancelDialog.value = true
+}
+
+const confirmCancelOrder = async () => {
+  cancellingOrder.value = true
+  try {
+    await post(`/orders/${orderNumber}/cancel`, {})
+    showCancelDialog.value = false
+    await fetchOrder()
+  } catch (err: any) {
+    error.value = err.response?._data?.message || 'Failed to cancel order. Please try again.'
+    console.error('Error cancelling order:', err)
+  } finally {
+    cancellingOrder.value = false
+  }
+}
+
+const closeCancelDialog = () => {
+  showCancelDialog.value = false
 }
 </script>

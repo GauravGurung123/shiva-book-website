@@ -117,7 +117,8 @@ const navigationLinks: NavigationLink[] = [
 ]
 
 const authenticatedLinks: NavigationLink[] = [
-  { label: 'Orders', href: '/orders' }
+  { label: 'Orders', href: '/orders' },
+  { label: 'Returns', href: '/returns' }
 ]
 
 const cartCount = computed(() => itemCount.value)

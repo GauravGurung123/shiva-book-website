@@ -298,3 +298,38 @@ export interface Payment {
   created_at: string
   updated_at: string
 }
+
+// Return Request Types
+export type ReturnRequestType = 'withdrawal' | 'defective' | 'damaged' | 'incorrect_item'
+
+export type ReturnRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'shipped' | 'received' | 'refunded'
+
+export interface ReturnRequestItem {
+  order_item_id: number
+  quantity: number
+}
+
+export interface CreateReturnRequestData {
+  order_id: number
+  type: ReturnRequestType
+  reason: string
+  items: ReturnRequestItem[]
+  attachments?: File[]
+}
+
+export interface ReturnRequest {
+  id: number
+  order_id: number
+  order_number: string
+  type: ReturnRequestType
+  reason: string
+  status: ReturnRequestStatus
+  items: ReturnRequestItem[]
+  attachments?: string[]
+  created_at: string
+  updated_at: string
+}
+
+export interface ReturnRequestsResponse {
+  data: ReturnRequest[]
+}
