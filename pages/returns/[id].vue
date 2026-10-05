@@ -115,7 +115,7 @@
             <div v-if="returnRequest.status === 'pending'" class="bg-white rounded-lg shadow p-6">
               <h2 class="text-xl font-bold text-gray-800 mb-4 font-heading">Actions</h2>
               <button 
-                @click="cancelRequest"
+                @click="openCancelDialog"
                 :disabled="cancelling"
                 class="bg-red-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
@@ -128,15 +128,25 @@
               <h3 class="font-bold text-gray-800 mb-2">Next Steps</h3>
               <p class="text-blue-800">Your return request has been approved. Please ship the items back to us using the shipping address provided in your order confirmation. Once shipped, the status will be updated.</p>
             </div>
+
+<!--            <div v-if="returnRequest.status === 'shipped'" class="bg-purple-50 border border-purple-200 rounded-lg p-6">-->
+<!--              <h3 class="font-bold text-gray-800 mb-2">Items Shipped</h3>-->
+<!--              <p class="text-purple-800">You have shipped the items. We will inspect and update the status once the package arrives at our warehouse.</p>-->
+<!--            </div>-->
             
-            <div v-if="returnRequest.status === 'received'" class="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 class="font-bold text-gray-800 mb-2">Items Received</h3>
-              <p class="text-green-800">We have received your returned items. Your refund is being processed and will be issued shortly.</p>
-            </div>
+<!--            <div v-if="returnRequest.status === 'received'" class="bg-green-50 border border-green-200 rounded-lg p-6">-->
+<!--              <h3 class="font-bold text-gray-800 mb-2">Items Received</h3>-->
+<!--              <p class="text-green-800">We have received your returned items. Your refund is being processed and will be issued shortly.</p>-->
+<!--            </div>-->
             
-            <div v-if="returnRequest.status === 'refunded'" class="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 class="font-bold text-gray-800 mb-2">Refund Issued</h3>
-              <p class="text-green-800">Your refund has been successfully issued. Please allow 5-7 business days for the refund to appear in your account.</p>
+<!--            <div v-if="returnRequest.status === 'refunded'" class="bg-green-50 border border-green-200 rounded-lg p-6">-->
+<!--              <h3 class="font-bold text-gray-800 mb-2">Refund Issued</h3>-->
+<!--              <p class="text-green-800">Your refund has been successfully issued. Please allow 5-7 business days for the refund to appear in your account.</p>-->
+<!--            </div>-->
+
+            <div v-if="returnRequest.status === 'cancelled'" class="bg-gray-100 border border-gray-300 rounded-lg p-6">
+              <h3 class="font-bold text-gray-800 mb-2">Request Cancelled</h3>
+              <p class="text-gray-700">This return request has been cancelled.</p>
             </div>
             
             <div v-if="returnRequest.status === 'rejected'" class="bg-red-50 border border-red-200 rounded-lg p-6">
@@ -187,10 +197,22 @@
         </div>
       </div>
     </div>
+
+    <!-- Cancel Return Request Confirmation Dialog -->
+    <ConfirmDialog
+      :is-open="showCancelDialog"
+      title="Cancel Return Request"
+      message="Are you sure you want to cancel this return request? This action cannot be undone."
+      confirm-text="Yes, Cancel"
+      :loading="cancelling"
+      @close="closeCancelDialog"
+      @confirm="confirmCancelRequest"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import type { ReturnRequest } from '~/types'
 
 const route = useRoute()
@@ -203,6 +225,7 @@ const returnRequest = ref<ReturnRequest | null>(null)
 const loading = ref(false)
 const error = ref('')
 const cancelling = ref(false)
+const showCancelDialog = ref(false)
 
 // Redirect if not authenticated
 if (!isAuthenticated.value) {
@@ -218,8 +241,8 @@ const fetchReturnRequest = async () => {
   error.value = ''
   
   try {
-    const response = await get<{ data: ReturnRequest }>(`/return-requests/${requestId}`)
-    returnRequest.value = response.data
+    const response = await get<any>(`/return-requests/${requestId}`)
+    returnRequest.value = response?.data || response
   } catch (err: any) {
     error.value = err.response?._data?.message || 'Failed to load return request. Please try again.'
     console.error('Error fetching return request:', err)
@@ -228,14 +251,19 @@ const fetchReturnRequest = async () => {
   }
 }
 
-const cancelRequest = async () => {
-  if (!confirm('Are you sure you want to cancel this return request?')) {
-    return
-  }
-  
+const openCancelDialog = () => {
+  showCancelDialog.value = true
+}
+
+const closeCancelDialog = () => {
+  showCancelDialog.value = false
+}
+
+const confirmCancelRequest = async () => {
   cancelling.value = true
   try {
     await post(`/return-requests/${requestId}/cancel`, {})
+    showCancelDialog.value = false
     await fetchReturnRequest()
   } catch (err: any) {
     error.value = err.response?._data?.message || 'Failed to cancel return request. Please try again.'
@@ -306,6 +334,10 @@ const getStepClass = (status: string) => {
   const currentIndex = statusSteps.findIndex(step => step.status === status)
   const currentStatusIndex = statusSteps.findIndex(step => step.status === returnRequest.value?.status)
   
+  if (currentStatusIndex === -1) {
+    return 'bg-gray-200 text-gray-400'
+  }
+  
   if (currentIndex < currentStatusIndex) {
     return 'bg-green-500 text-white'
   } else if (currentIndex === currentStatusIndex) {
@@ -320,6 +352,10 @@ const isStepCompleted = (status: string) => {
   
   const currentIndex = statusSteps.findIndex(step => step.status === status)
   const currentStatusIndex = statusSteps.findIndex(step => step.status === returnRequest.value?.status)
+  
+  if (currentStatusIndex === -1) {
+    return false
+  }
   
   return currentIndex < currentStatusIndex
 }

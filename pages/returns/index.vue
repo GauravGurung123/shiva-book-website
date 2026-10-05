@@ -70,21 +70,33 @@
               </div>
               <button 
                 v-if="request.status === 'pending'"
-                @click="cancelRequest(request.id)"
+                @click="openCancelDialog(request.id)"
                 :disabled="cancelling"
                 class="text-red-600 hover:text-red-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {{ cancelling ? 'Cancelling...' : 'Cancel Request' }}
+                {{ cancelling && selectedRequestIdToCancel === request.id ? 'Cancelling...' : 'Cancel Request' }}
               </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Cancel Return Request Confirmation Dialog -->
+    <ConfirmDialog
+      :is-open="showCancelDialog"
+      title="Cancel Return Request"
+      message="Are you sure you want to cancel this return request? This action cannot be undone."
+      confirm-text="Yes, Cancel"
+      :loading="cancelling"
+      @close="closeCancelDialog"
+      @confirm="confirmCancelRequest"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import type { ReturnRequest } from '~/types'
 
 const { get, post } = useApi()
@@ -94,6 +106,8 @@ const returnRequests = ref<ReturnRequest[]>([])
 const loading = ref(false)
 const error = ref('')
 const cancelling = ref(false)
+const showCancelDialog = ref(false)
+const selectedRequestIdToCancel = ref<number | null>(null)
 
 // Redirect if not authenticated
 if (!isAuthenticated.value) {
@@ -109,8 +123,16 @@ const fetchReturnRequests = async () => {
   error.value = ''
   
   try {
-    const response = await get<{ data: ReturnRequest[] }>('/return-requests')
-    returnRequests.value = response.data.data
+    const response = await get<any>('/return-requests')
+    if (Array.isArray(response)) {
+      returnRequests.value = response
+    } else if (Array.isArray(response?.data)) {
+      returnRequests.value = response.data
+    } else if (Array.isArray(response?.data?.data)) {
+      returnRequests.value = response.data.data
+    } else {
+      returnRequests.value = []
+    }
   } catch (err: any) {
     error.value = err.response?._data?.message || 'Failed to load return requests. Please try again.'
     console.error('Error fetching return requests:', err)
@@ -119,14 +141,24 @@ const fetchReturnRequests = async () => {
   }
 }
 
-const cancelRequest = async (id: number) => {
-  if (!confirm('Are you sure you want to cancel this return request?')) {
-    return
-  }
+const openCancelDialog = (id: number) => {
+  selectedRequestIdToCancel.value = id
+  showCancelDialog.value = true
+}
+
+const closeCancelDialog = () => {
+  showCancelDialog.value = false
+  selectedRequestIdToCancel.value = null
+}
+
+const confirmCancelRequest = async () => {
+  if (!selectedRequestIdToCancel.value) return
   
   cancelling.value = true
   try {
-    await post(`/return-requests/${id}/cancel`, {})
+    await post(`/return-requests/${selectedRequestIdToCancel.value}/cancel`, {})
+    showCancelDialog.value = false
+    selectedRequestIdToCancel.value = null
     await fetchReturnRequests()
   } catch (err: any) {
     error.value = err.response?._data?.message || 'Failed to cancel return request. Please try again.'

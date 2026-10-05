@@ -241,8 +241,9 @@ const handleFileChange = (event: Event) => {
     const newFiles = Array.from(target.files)
     if (attachments.value.length + newFiles.length <= 5) {
       attachments.value = [...attachments.value, ...newFiles]
+      submitError.value = ''
     } else {
-      alert('You can upload a maximum of 5 files')
+      submitError.value = 'You can upload a maximum of 5 files'
     }
     target.value = ''
   }
@@ -285,10 +286,14 @@ const submitReturnRequest = async () => {
       formData.append('order_id', data.order_id.toString())
       formData.append('type', data.type)
       formData.append('reason', data.reason)
-      formData.append('items', JSON.stringify(data.items))
       
-      attachments.value.forEach((file, index) => {
-        formData.append(`attachments[${index}]`, file)
+      data.items.forEach((item, index) => {
+        formData.append(`items[${index}][order_item_id]`, item.order_item_id.toString())
+        formData.append(`items[${index}][quantity]`, item.quantity.toString())
+      })
+      
+      attachments.value.forEach((file) => {
+        formData.append('attachments[]', file)
       })
       
       await postFormData('/return-requests', formData)
