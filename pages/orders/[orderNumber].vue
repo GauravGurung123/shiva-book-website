@@ -261,10 +261,22 @@
         </div>
       </div>
     </div>
+
+    <!-- Cancel Order Confirmation Dialog -->
+    <ConfirmDialog
+      :is-open="showCancelDialog"
+      title="Cancel Order"
+      message="Are you sure you want to cancel this order? This action cannot be undone."
+      confirm-text="Yes, Cancel"
+      :loading="cancellingOrder"
+      @close="closeCancelDialog"
+      @confirm="confirmCancelOrder"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import type { Order, Payment } from '~/types'
 
 const route = useRoute()
@@ -292,6 +304,7 @@ const paymentSuccess = ref('')
 
 // Cancel order
 const cancellingOrder = ref(false)
+const showCancelDialog = ref(false)
 
 // Redirect if not authenticated
 if (!isAuthenticated.value) {
