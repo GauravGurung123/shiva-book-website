@@ -314,6 +314,42 @@ export const useAuth = () => {
     }
   }
 
+  // Send password reset link
+  const sendPasswordReset = async (email: string): Promise<void> => {
+    const response = await fetch(`${apiBase}/auth/password-reset/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ email })
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Failed to send password reset link')
+    }
+  }
+
+  // Reset password using token
+  const resetPassword = async (token: string, password: string, password_confirmation: string): Promise<void> => {
+    const response = await fetch(`${apiBase}/auth/password-reset/reset`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ token, password, password_confirmation })
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Failed to reset password')
+    }
+  }
+
   // Logout user
   const logout = async (): Promise<void> => {
     if (!accessToken.value) {
@@ -342,6 +378,8 @@ export const useAuth = () => {
     logout,
     fetchUser,
     verifyEmail,
+    sendPasswordReset,
+    resetPassword,
     getAuthorizationUrl,
     authorize,
     exchangeToken,

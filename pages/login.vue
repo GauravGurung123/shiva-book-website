@@ -55,7 +55,7 @@
             <input type="checkbox" class="mr-2" />
             <span class="text-gray-600 text-sm">Remember me</span>
           </label>
-          <a href="#" class="text-primary-600 text-sm hover:underline">Forgot password?</a>
+          <NuxtLink to="/forgot-password" class="text-primary-600 text-sm hover:underline">Forgot password?</NuxtLink>
         </div>
 
         <button 
