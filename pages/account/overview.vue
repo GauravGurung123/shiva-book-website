@@ -33,6 +33,15 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
           </div>
+          <div @click="router.push('/returns')" class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">MY RETURNS</h3>
+              <p class="text-gray-600 text-sm">Upload your return requests and track their status.</p>
+            </div>
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
 
           <div @click="router.push('/account/profile')" class="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer transition">
             <div>
