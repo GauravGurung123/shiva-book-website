@@ -189,7 +189,16 @@
                         +
                       </button>
                     </div>
-                    <span class="text-gray-800 font-bold">€{{ item.subtotal.toFixed(2) }}</span>
+                    <div class="flex items-center gap-4">
+                      <span class="text-gray-800 font-bold">€{{ item.subtotal.toFixed(2) }}</span>
+                      <button 
+                        @click="removeItem(item)"
+                        :disabled="removingItem"
+                        class="text-red-600 hover:text-red-700 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {{ removingItem ? 'Removing...' : 'Remove' }}
+                      </button>
+                    </div>
                   </div>
                   <div class="mt-2 text-sm">
                     <span class="text-gray-600">€{{ parseFloat(item.book.final_price || item.book.price || 0).toFixed(2) }} each</span>
@@ -269,7 +278,7 @@
 <script setup lang="ts">
 import type { CartItem, Address } from '~/types'
 
-const { cart, loading, error, fetchCart, itemCount, updateQuantity } = useCart()
+const { cart, loading, error, fetchCart, itemCount, updateQuantity, removeFromCart } = useCart()
 const { isAuthenticated } = useAuth()
 const { get } = useApi()
 
@@ -282,6 +291,7 @@ const shippingCountryUuid = ref<string | null>(null)
 const shippingFee = ref(0)
 const loadingShippingFee = ref(false)
 const updatingQuantity = ref(false)
+const removingItem = ref(false)
 
 // Address selection
 const addresses = ref<Address[]>([])
@@ -356,6 +366,17 @@ const updateItemQuantity = async (item: CartItem, newQuantity: number) => {
     console.error('Error updating quantity:', err)
   } finally {
     updatingQuantity.value = false
+  }
+}
+
+const removeItem = async (item: CartItem) => {
+  removingItem.value = true
+  try {
+    await removeFromCart(item.id)
+  } catch (err) {
+    console.error('Error removing item:', err)
+  } finally {
+    removingItem.value = false
   }
 }
 

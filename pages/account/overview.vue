@@ -152,75 +152,75 @@
             <p class="font-medium text-gray-800">Wide selection</p>
             <p class="text-gray-600 text-sm mt-1">Thousands of Nepali books available across Europe.</p>
           </div>
-          <div class="p-4 bg-gray-50 rounded">
-            <p class="font-medium text-gray-800">Free shipping</p>
-            <p class="text-gray-600 text-sm mt-1">FREE shipping on all orders across Europe.</p>
-          </div>
+<!--          <div class="p-4 bg-gray-50 rounded">-->
+<!--            <p class="font-medium text-gray-800">Free shipping</p>-->
+<!--            <p class="text-gray-600 text-sm mt-1">FREE shipping on all orders across Europe.</p>-->
+<!--          </div>-->
           <div class="p-4 bg-gray-50 rounded">
             <p class="font-medium text-gray-800">Easy returns</p>
             <p class="text-gray-600 text-sm mt-1">15-day return policy for your peace of mind.</p>
           </div>
-          <div class="p-4 bg-gray-50 rounded">
-            <p class="font-medium text-gray-800">COD available</p>
-            <p class="text-gray-600 text-sm mt-1">Cash on delivery available in select locations.</p>
-          </div>
+<!--          <div class="p-4 bg-gray-50 rounded">-->
+<!--            <p class="font-medium text-gray-800">COD available</p>-->
+<!--            <p class="text-gray-600 text-sm mt-1">Cash on delivery available in select locations.</p>-->
+<!--          </div>-->
         </div>
       </div>
 
       <!-- Newsletter -->
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-2">Subscribe to our newsletter</h3>
-        <p class="text-gray-600 mb-4">Subscribe to the newsletter and receive a €10 voucher</p>
-        
-        <form @submit.prevent="handleNewsletter" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-gray-700 font-medium mb-2">Name *</label>
-              <input 
-                v-model="newsletterForm.name" 
-                type="text" 
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="Your name"
-              />
-            </div>
-            <div>
-              <label class="block text-gray-700 font-medium mb-2">Email *</label>
-              <input 
-                v-model="newsletterForm.email" 
-                type="email" 
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="your@email.com"
-              />
-            </div>
-          </div>
+<!--      <div class="bg-white rounded-lg shadow-md p-6">-->
+<!--        <h3 class="text-xl font-bold text-gray-800 mb-2">Subscribe to our newsletter</h3>-->
+<!--        <p class="text-gray-600 mb-4">Subscribe to the newsletter and receive a €10 voucher</p>-->
+<!--        -->
+<!--        <form @submit.prevent="handleNewsletter" class="space-y-4">-->
+<!--          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">-->
+<!--            <div>-->
+<!--              <label class="block text-gray-700 font-medium mb-2">Name *</label>-->
+<!--              <input -->
+<!--                v-model="newsletterForm.name" -->
+<!--                type="text" -->
+<!--                required-->
+<!--                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"-->
+<!--                placeholder="Your name"-->
+<!--              />-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <label class="block text-gray-700 font-medium mb-2">Email *</label>-->
+<!--              <input -->
+<!--                v-model="newsletterForm.email" -->
+<!--                type="email" -->
+<!--                required-->
+<!--                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"-->
+<!--                placeholder="your@email.com"-->
+<!--              />-->
+<!--            </div>-->
+<!--          </div>-->
 
-          <div class="space-y-2">
-            <label class="flex items-center">
-              <input type="checkbox" class="mr-2" />
-              <span class="text-gray-600 text-sm">I agree to receive marketing communications</span>
-            </label>
-            <label class="flex items-center">
-              <input type="checkbox" class="mr-2" />
-              <span class="text-gray-600 text-sm">I agree to the terms and conditions</span>
-            </label>
-          </div>
+<!--          <div class="space-y-2">-->
+<!--            <label class="flex items-center">-->
+<!--              <input type="checkbox" class="mr-2" />-->
+<!--              <span class="text-gray-600 text-sm">I agree to receive marketing communications</span>-->
+<!--            </label>-->
+<!--            <label class="flex items-center">-->
+<!--              <input type="checkbox" class="mr-2" />-->
+<!--              <span class="text-gray-600 text-sm">I agree to the terms and conditions</span>-->
+<!--            </label>-->
+<!--          </div>-->
 
-          <button 
-            type="submit"
-            class="w-full md:w-auto px-8 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition"
-          >
-            Subscribe
-          </button>
-        </form>
+<!--          <button -->
+<!--            type="submit"-->
+<!--            class="w-full md:w-auto px-8 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition"-->
+<!--          >-->
+<!--            Subscribe-->
+<!--          </button>-->
+<!--        </form>-->
 
-        <div class="mt-4 text-sm text-gray-600">
-          <a href="#" class="hover:underline">Terms and conditions</a>
-          <span class="mx-2">|</span>
-          <a href="#" class="hover:underline">Privacy policy</a>
-        </div>
-      </div>
+<!--        <div class="mt-4 text-sm text-gray-600">-->
+<!--          <a href="#" class="hover:underline">Terms and conditions</a>-->
+<!--          <span class="mx-2">|</span>-->
+<!--          <a href="#" class="hover:underline">Privacy policy</a>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </template>

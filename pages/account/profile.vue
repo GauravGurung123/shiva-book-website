@@ -191,16 +191,16 @@
                 </label>
               </div>
 
-              <div class="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <h3 class="font-medium text-gray-800">Newsletter Subscription</h3>
-                  <p class="text-gray-600 text-sm">Subscribe to our newsletter for offers and updates</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" v-model="preferences.newsletter" class="sr-only peer" />
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                </label>
-              </div>
+<!--              <div class="flex items-center justify-between p-4 border rounded-lg">-->
+<!--                <div>-->
+<!--                  <h3 class="font-medium text-gray-800">Newsletter Subscription</h3>-->
+<!--                  <p class="text-gray-600 text-sm">Subscribe to our newsletter for offers and updates</p>-->
+<!--                </div>-->
+<!--                <label class="relative inline-flex items-center cursor-pointer">-->
+<!--                  <input type="checkbox" v-model="preferences.newsletter" class="sr-only peer" />-->
+<!--                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>-->
+<!--                </label>-->
+<!--              </div>-->
 
               <button
                 @click="handleSavePreferences"
