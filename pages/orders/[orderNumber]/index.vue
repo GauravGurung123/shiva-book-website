@@ -10,7 +10,7 @@
       <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
         <p class="text-red-600">{{ error }}</p>
       </div>
-      
+
       <!-- Order Details -->
       <div v-else-if="order">
         <div class="mb-6">
@@ -282,6 +282,7 @@ import type { Order, Payment } from '~/types'
 const route = useRoute()
 const { get, post, postFormData } = useApi()
 const { isAuthenticated } = useAuth()
+const { fetchCart } = useCart()
 
 const orderNumber = route.params.orderNumber as string
 
@@ -315,6 +316,7 @@ onMounted(async () => {
   await fetchOrder()
   await fetchPayment()
   await fetchSettings()
+  await fetchCart()
 })
 
 const fetchOrder = async () => {
