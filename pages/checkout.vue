@@ -390,9 +390,11 @@ const fetchShippingFee = async () => {
   try {
     const { post } = useApi()
     const quantity = cart.value.items.reduce((sum, item) => sum + item.quantity, 0)
+    const subtotal = cart.value.items.reduce((sum, item) => sum + (item.quantity * item.price), 0)
     const response = await post<{ data: { shipping_fee: number } }>('/shipping/calculate', {
       country_uuid: shippingCountryUuid.value,
-      quantity: quantity
+      quantity: quantity,
+      subtotal: subtotal
     })
     console.log('Shipping fee response:', response.data.shipping_fee)
     shippingFee.value = response.data.shipping_fee
