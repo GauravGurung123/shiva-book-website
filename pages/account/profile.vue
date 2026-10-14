@@ -225,15 +225,6 @@
             <div class="space-y-4">
               <div class="bg-red-50 border border-red-200 rounded-lg p-4">
                 <h3 class="font-medium text-red-800 mb-2">Warning: This action cannot be undone</h3>
-                <p class="text-red-700 text-sm">
-                  Deleting your account will permanently remove all your data including:
-                </p>
-                <ul class="text-red-700 text-sm mt-2 list-disc list-inside">
-                  <li>Order history</li>
-                  <li>Saved addresses</li>
-                  <li>Personal information</li>
-                  <li>Preferences and settings</li>
-                </ul>
               </div>
 
               <div>
@@ -244,6 +235,23 @@
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="DELETE"
                 />
+              </div>
+
+              <div>
+                <label class="block text-gray-700 font-medium mb-2">Enter your password</label>
+                <input
+                  v-model="deletePassword"
+                  type="password"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Your password"
+                />
+              </div>
+
+              <div v-if="deleteMessage" :class="[
+                'p-4 rounded-lg',
+                deleteMessageType === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+              ]">
+                {{ deleteMessage }}
               </div>
 
               <button
@@ -295,6 +303,9 @@ const preferences = ref({
 })
 
 const deleteConfirmation = ref('')
+const deletePassword = ref('')
+const deleteMessage = ref('')
+const deleteMessageType = ref<'success' | 'error' | ''>('')
 
 onMounted(async () => {
   const accessToken = useCookie('access_token')
@@ -393,20 +404,43 @@ const handleSavePreferences = async () => {
 }
 
 const handleDeleteAccount = async () => {
+  deleteMessage.value = ''
+  deleteMessageType.value = ''
+
   if (deleteConfirmation.value !== 'DELETE') {
     return
   }
-  
-  if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+
+  if (!deletePassword.value) {
+    deleteMessage.value = 'Please enter your password to delete your account'
+    deleteMessageType.value = 'error'
     return
   }
   
   loading.value = true
   try {
-    // TODO: Implement account deletion API call
-    alert('Account deletion functionality to be implemented')
+    const { post } = useApi()
+    await post('/auth/delete-account', {
+      password: deletePassword.value,
+      confirmation: true
+    })
+    
+    deleteMessage.value = 'Account deleted successfully'
+    deleteMessageType.value = 'success'
+    
+    // Clear cookies and redirect to home
+    const accessToken = useCookie('access_token')
+    const sessionId = useCookie('session_id')
+    accessToken.value = null
+    sessionId.value = null
+    
+    setTimeout(() => {
+      router.push('/')
+    }, 2000)
   } catch (error) {
     console.error('Failed to delete account:', error)
+    deleteMessage.value = 'Failed to delete account. Please check your password and try again.'
+    deleteMessageType.value = 'error'
   } finally {
     loading.value = false
   }
