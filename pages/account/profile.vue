@@ -161,6 +161,13 @@
               >
                 Update Password
               </button>
+
+              <div v-if="passwordMessage" :class="[
+                'mt-4 p-4 rounded-lg',
+                passwordMessageType === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+              ]">
+                {{ passwordMessage }}
+              </div>
             </form>
           </div>
 
@@ -278,6 +285,9 @@ const passwordForm = ref({
   confirmPassword: ''
 })
 
+const passwordMessage = ref('')
+const passwordMessageType = ref<'success' | 'error' | ''>('')
+
 const preferences = ref({
   emailNotifications: true,
   smsNotifications: false,
@@ -330,15 +340,32 @@ const handleUpdateProfile = async () => {
 }
 
 const handleChangePassword = async () => {
+  passwordMessage.value = ''
+  passwordMessageType.value = ''
+
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
-    alert('Passwords do not match')
+    passwordMessage.value = 'Passwords do not match'
+    passwordMessageType.value = 'error'
+    return
+  }
+
+  if (!passwordForm.value.currentPassword || !passwordForm.value.newPassword) {
+    passwordMessage.value = 'Please fill in all password fields'
+    passwordMessageType.value = 'error'
     return
   }
   
   loading.value = true
   try {
-    // TODO: Implement password change API call
-    alert('Password change functionality to be implemented')
+    const { post } = useApi()
+    await post('auth/change-password', {
+      current_password: passwordForm.value.currentPassword,
+      password: passwordForm.value.newPassword,
+      password_confirmation: passwordForm.value.confirmPassword
+    })
+    
+    passwordMessage.value = 'Password changed successfully'
+    passwordMessageType.value = 'success'
     passwordForm.value = {
       currentPassword: '',
       newPassword: '',
@@ -346,6 +373,8 @@ const handleChangePassword = async () => {
     }
   } catch (error) {
     console.error('Failed to change password:', error)
+    passwordMessage.value = 'Failed to change password. Please check your current password and try again.'
+    passwordMessageType.value = 'error'
   } finally {
     loading.value = false
   }
