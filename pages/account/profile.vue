@@ -98,13 +98,14 @@
                   type="email"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                   placeholder="your@email.com"
+                  disabled
                 />
               </div>
 
               <div>
-                <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                <label class="block text-gray-700 font-medium mb-2">Mobile Number</label>
                 <input
-                  v-model="profileForm.phone"
+                  v-model="profileForm.mobile_no"
                   type="tel"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                   placeholder="+351 912 345 678"
@@ -284,7 +285,7 @@ const loading = ref(false)
 const profileForm = ref({
   name: '',
   email: '',
-  phone: ''
+  mobile_no: ''
 })
 
 const passwordForm = ref({
@@ -314,7 +315,6 @@ onMounted(async () => {
     router.push('/login')
     return
   }
-  
   if (!user.value && accessToken.value) {
     try {
       await fetchUser()
@@ -334,9 +334,20 @@ onMounted(async () => {
   profileForm.value = {
     name: user.value.name || '',
     email: user.value.email || '',
-    phone: user.value.phone || ''
+    mobile_no: user.value.mobile_no || ''
   }
 })
+
+// Watch for user data changes to update form
+watch(user, (newUser) => {
+  if (newUser) {
+    profileForm.value = {
+      name: newUser.name || '',
+      email: newUser.email || '',
+      mobile_no: newUser.mobile_no || ''
+    }
+  }
+}, { immediate: true })
 
 const handleUpdateProfile = async () => {
   loading.value = true

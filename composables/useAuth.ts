@@ -291,7 +291,7 @@ export const useAuth = () => {
     }
 
     const userData = await response.json()
-    user.value = userData
+    user.value = userData.data
     userCookie.value = userData
     return userData
   }
