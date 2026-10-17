@@ -156,7 +156,7 @@ const handleSearch = (query: string, filters: any) => {
 
 const handleClearFilters = () => {
   currentFilters.value = {
-    searchQuery: '',
+    query: '',
     categories: [],
     minPrice: null,
     maxPrice: null,
