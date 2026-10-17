@@ -11,13 +11,13 @@
           </p>
           <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">2. Right of Withdrawal — Physical Books</h2>
           <p>
-            If you are a consumer purchasing a physical book from our online shop, you have the right to withdraw from your purchase within <strong>14 calendar days</strong> without giving any reason.
+            If you are a consumer purchasing a physical book from our online shop, you have the right to withdraw from your purchase within <strong>30 calendar days</strong>.
           </p>
           <p>
-            For a purchase of one or more physical books, the 14-day period begins on the day on which you, or a third party designated by you other than the carrier, acquire physical possession of the book or, where the order contains multiple books delivered separately, the last book.
+            For a purchase of one or more physical books, the 30-day period begins on the day on which you, or a third party designated by you other than the carrier, acquire physical possession of the book or, where the order contains multiple books delivered separately, the last book.
           </p>
           <p>
-            To exercise your right of withdrawal, you must inform us of your decision before the 14-day withdrawal period expires.
+            To exercise your right of withdrawal, you must inform us of your decision before the 30-day withdrawal period expires.
           </p>
           <p>
             You may exercise your right of withdrawal by sending us a clear statement of your decision, for example by email. Please include your order number and identify the book or books you wish to return.
@@ -34,7 +34,7 @@
             After informing us of your decision to withdraw, you must send the book back to us without undue delay and, in any event, no later than <strong>14 days after the day on which you informed us of your withdrawal</strong>.
           </p>
           <p>
-            The deadline is met if you send the book back before the 14-day period has expired.
+            The deadline is met if you send the book back before the 30-day period has expired.
           </p>
           <p>
             You may handle the book only to the extent necessary to establish its nature, characteristics and functioning, as you would reasonably be able to do in a physical bookshop.
@@ -76,7 +76,7 @@
 
           <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">6. Damaged, Defective or Incorrect Books</h2>
           <p>
-            The 14-day right of withdrawal is separate from your statutory consumer rights concerning books that are defective, damaged, incorrect, or otherwise do not conform to the contract.
+            The 30-day right of withdrawal is separate from your statutory consumer rights concerning books that are defective, damaged, incorrect, or otherwise do not conform to the contract.
           </p>
           <p>
             If you receive a damaged, defective, or incorrect book, please contact us at <a href="mailto:nepalibookineurope@gmail.com" class="text-primary-600 hover:text-primary-700">nepalibookineurope@gmail.com</a> and provide your order number and, where appropriate, photographs or other information describing the problem.
@@ -97,7 +97,7 @@
           </p>
           <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">8. How to Exercise Your Right of Withdrawal</h2>
           <p>
-            To exercise your right of withdrawal, you can send us an unequivocal statement by email before the end of the applicable 14-day withdrawal period.
+            To exercise your right of withdrawal, you can send us an unequivocal statement by email before the end of the applicable 30-day withdrawal period.
           </p>
           <p>
             Please include:
