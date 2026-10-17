@@ -119,12 +119,12 @@
           v-model="sortBy"
           class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition outline-none text-sm"
         >
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="name-asc">Name (A-Z)</option>
-          <option value="name-desc">Name (Z-A)</option>
-          <option value="price-asc">Price (Low to High)</option>
-          <option value="price-desc">Price (High to Low)</option>
+          <option v-if="availableSortOptions.includes('newest')" value="newest">Newest First</option>
+          <option v-if="availableSortOptions.includes('oldest')" value="oldest">Oldest First</option>
+          <option v-if="availableSortOptions.includes('name-asc')" value="name-asc">Name (A-Z)</option>
+          <option v-if="availableSortOptions.includes('name-desc')" value="name-desc">Name (Z-A)</option>
+          <option v-if="availableSortOptions.includes('price-asc')" value="price-asc">Price (Low to High)</option>
+          <option v-if="availableSortOptions.includes('price-desc')" value="price-desc">Price (High to Low)</option>
         </select>
       </div>
     </div>
@@ -139,13 +139,17 @@ interface Props {
   categories?: Category[]
   showCategoryFilter?: boolean
   showPriceFilter?: boolean
+  defaultSortBy?: string
+  availableSortOptions?: string[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   searchPlaceholder: 'Search by title, author or description...',
   categories: () => [],
   showCategoryFilter: true,
-  showPriceFilter: true
+  showPriceFilter: true,
+  defaultSortBy: 'newest',
+  availableSortOptions: () => ['newest', 'oldest', 'name-asc', 'name-desc', 'price-asc', 'price-desc']
 })
 
 const emit = defineEmits<{
@@ -165,14 +169,14 @@ const searchQuery = ref('')
 const selectedCategories = ref<string[]>([])
 const minPrice = ref<number | null>(null)
 const maxPrice = ref<number | null>(null)
-const sortBy = ref('newest')
+const sortBy = ref(props.defaultSortBy)
 
 const hasActiveFilters = computed(() => {
   return (
     selectedCategories.value.length > 0 ||
     minPrice.value !== null ||
     maxPrice.value !== null ||
-    sortBy.value !== 'newest'
+    sortBy.value !== props.defaultSortBy
   )
 })
 
@@ -191,7 +195,7 @@ const clearFilters = () => {
   selectedCategories.value = []
   minPrice.value = null
   maxPrice.value = null
-  sortBy.value = 'newest'
+  sortBy.value = props.defaultSortBy
   emit('clear')
 }
 

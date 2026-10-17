@@ -6,6 +6,7 @@
       <!-- Search and Filters -->
       <SearchAndFilters
         :categories="categories"
+        search-placeholder="Search books by name..."
         @search="handleSearch"
         @clear="handleClearFilters"
       />

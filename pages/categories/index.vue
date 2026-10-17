@@ -8,6 +8,8 @@
         search-placeholder="Search categories by name..."
         :show-category-filter="false"
         :show-price-filter="false"
+        default-sort-by="name-asc"
+        :available-sort-options="['newest', 'oldest', 'name-asc', 'name-desc']"
         @search="handleSearch"
         @clear="handleClearFilters"
       />
@@ -57,6 +59,7 @@ const loadCategories = async () => {
   try {
     allCategories.value = await fetchAllCategories()
     filterCategories()
+    sortBy('name-asc')
   } catch (err: any) {
     error.value = err.message || 'Failed to load categories'
     console.error('Error loading categories:', err)
@@ -76,9 +79,26 @@ const filterCategories = () => {
   }
 }
 
+const sortBy = (sortBy: string) => {
+  switch (sortBy) {
+    case 'newest':
+      categories.value.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      break
+    case 'oldest':
+      categories.value.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      break
+    case 'name-asc':
+      categories.value.sort((a, b) => a.name.localeCompare(b.name))
+      break
+    case 'name-desc':
+      categories.value.sort((a, b) => b.name.localeCompare(a.name))
+      break
+  }
+}
 const handleSearch = (query: string, filters: any) => {
   searchQuery.value = query
   filterCategories()
+  sortBy(filters.sortBy)
 }
 
 const handleClearFilters = () => {
