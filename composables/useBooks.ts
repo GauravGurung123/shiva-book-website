@@ -17,13 +17,14 @@ export const useBooks = () => {
   const { get } = useApi()
   
   // Fetch paginated books
-  const fetchBooks = async (page: number = 1, perPage: number = 25, sortBy: string = 'id', descending: boolean = false) => {
+  const fetchBooks = async (page: number = 1, perPage: number = 25, sortBy: string = 'id', descending: boolean = false, filters: object = {}) => {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
         rowsPerPage: perPage.toString(),
         sortBy,
-        descending: descending.toString()
+        descending: descending.toString(),
+        filters: JSON.stringify(filters)
       })
       
       const response = await get<any>(`/books?${params.toString()}`)

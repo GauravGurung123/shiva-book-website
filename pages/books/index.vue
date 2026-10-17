@@ -82,7 +82,7 @@ const pagination = ref({
 })
 
 const currentFilters = ref({
-  searchQuery: '',
+  query: '',
   categories: [] as string[],
   minPrice: null as number | null,
   maxPrice: null as number | null,
@@ -124,8 +124,7 @@ const loadBooks = async (page: number = 1) => {
         descending = true
         break
     }
-    
-    const result = await fetchBooks(page, 25, sortBy, descending)
+    const result = await fetchBooks(page, 25, sortBy, descending, currentFilters.value)
     books.value = result.books
     pagination.value = result.pagination
   } catch (err: any) {
@@ -146,7 +145,7 @@ const goToPage = (page: number) => {
 
 const handleSearch = (query: string, filters: any) => {
   currentFilters.value = {
-    searchQuery: query,
+    query: query,
     categories: filters.categories,
     minPrice: filters.minPrice,
     maxPrice: filters.maxPrice,
